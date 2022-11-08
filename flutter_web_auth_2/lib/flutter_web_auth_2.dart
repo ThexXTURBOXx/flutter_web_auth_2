@@ -59,7 +59,7 @@ class FlutterWebAuth2 {
       'Do not use redirectOriginOverride in production',
     );
 
-    if (!_schemeRegExp.hasMatch(callbackUrlScheme)) {
+    if (!Platform.isWindows && !_schemeRegExp.hasMatch(callbackUrlScheme)) {
       throw ArgumentError.value(
         callbackUrlScheme,
         'callbackUrlScheme',
