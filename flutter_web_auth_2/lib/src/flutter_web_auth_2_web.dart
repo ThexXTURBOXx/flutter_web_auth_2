@@ -8,6 +8,8 @@ import 'package:flutter_web_auth_2_platform_interface/flutter_web_auth_2_platfor
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
+  static final RegExp _schemeRegExp = RegExp(r'^[a-z][a-z0-9+.-]*$');
+
   static void registerWith(Registrar registrar) {
     final channel = MethodChannel(
       'flutter_web_auth_2',
@@ -46,6 +48,14 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
     required bool preferEphemeral,
     String? redirectOriginOverride,
   }) async {
+    if (!_schemeRegExp.hasMatch(callbackUrlScheme)) {
+      throw ArgumentError.value(
+        callbackUrlScheme,
+        'callbackUrlScheme',
+        'must be a valid URL scheme',
+      );
+    }
+
     context.callMethod('open', [url]);
     await for (final MessageEvent messageEvent in window.onMessage) {
       if (messageEvent.origin == (redirectOriginOverride ?? Uri.base.origin)) {
