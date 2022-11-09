@@ -24,11 +24,24 @@ class _OnAppLifecycleResumeObserver extends WidgetsBindingObserver {
 }
 
 class FlutterWebAuth2 {
+  static final RegExp _schemeRegExp = RegExp(r'^[a-z][a-z0-9+.-]*$');
+
   static FlutterWebAuth2Platform get _platform =>
       FlutterWebAuth2Platform.instance;
 
   static final _OnAppLifecycleResumeObserver _resumedObserver =
       _OnAppLifecycleResumeObserver(_cleanUpDanglingCalls);
+
+  static void _assertCallbackScheme(String callbackUrlScheme) {
+    if (!_schemeRegExp.hasMatch(callbackUrlScheme) &&
+        (kIsWeb || !Platform.isWindows)) {
+      throw ArgumentError.value(
+        callbackUrlScheme,
+        'callbackUrlScheme',
+        'must be a valid URL scheme',
+      );
+    }
+  }
 
   /// Ask the user to authenticate to the specified web service.
   ///
@@ -57,6 +70,8 @@ class FlutterWebAuth2 {
       redirectOriginOverride == null || kDebugMode,
       'Do not use redirectOriginOverride in production',
     );
+
+    _assertCallbackScheme(callbackUrlScheme);
 
     WidgetsBinding.instance.removeObserver(
       _resumedObserver,
