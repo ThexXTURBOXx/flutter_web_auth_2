@@ -1,3 +1,7 @@
+## 2.2.0
+
+- 🐛 fix platforms version and use semantic versioning ([#31](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/41)) 
+
 ## 2.1.3
 
 - 🌹 Add `contextArgs` for web implementations (See [#40](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/40))
