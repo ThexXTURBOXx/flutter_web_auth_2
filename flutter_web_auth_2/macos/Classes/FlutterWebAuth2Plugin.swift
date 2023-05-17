@@ -36,7 +36,7 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
             let session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURLScheme, completionHandler: completionHandler)
 			session.prefersEphemeralWebBrowserSession = preferEphemeral ?? false
 
-            guard let provider = NSApplication.shared.keyWindow!.contentViewController as? FlutterViewController else {
+            guard let provider = NSApplication.shared.mainWindow?.contentViewController as? FlutterViewController else {
                 result(FlutterError(code: "FAILED", message: "Failed to aquire root FlutterViewController" , details: nil))
                 return
             }
