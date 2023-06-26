@@ -3,7 +3,7 @@ import SafariServices
 import FlutterMacOS
 
 @available(OSX 10.15, *)
-public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
+public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, ASWebAuthenticationPresentationContextProviding {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_web_auth_2", binaryMessenger: registrar.messenger)
         let instance = FlutterWebAuth2Plugin()
@@ -35,13 +35,7 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
 
             let session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURLScheme, completionHandler: completionHandler)
 			session.prefersEphemeralWebBrowserSession = preferEphemeral ?? false
-
-            guard let provider = NSApplication.shared.keyWindow!.contentViewController as? FlutterViewController else {
-                result(FlutterError(code: "FAILED", message: "Failed to aquire root FlutterViewController" , details: nil))
-                return
-            }
-
-            session.presentationContextProvider = provider
+            session.presentationContextProvider = self
 
             session.start()
             keepMe = session
@@ -49,11 +43,9 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
             result(FlutterMethodNotImplemented)
         }
     }
-}
 
-@available(OSX 10.15, *)
-extension FlutterViewController: ASWebAuthenticationPresentationContextProviding {
+    @available(macOS 10.15, *)
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return self.view.window!
+        return NSApplication.shared.windows.first { $0.isKeyWindow } ?? ASPresentationAnchor()
     }
 }
