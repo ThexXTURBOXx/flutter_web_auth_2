@@ -28,6 +28,11 @@ android {
     compileSdkVersion 33
     namespace 'com.linusu.flutter_web_auth_2'
 
+    compileOptions {
+        sourceCompatibility project.sourceCompatibility
+        targetCompatibility project.targetCompatibility
+    }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
