@@ -34,7 +34,9 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, ASWebAuthentication
             }
 
             let session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURLScheme, completionHandler: completionHandler)
-            session.prefersEphemeralWebBrowserSession = options["preferEphemeral"] ?? false
+            if let preferEphemeral = options?["preferEphemeral"] as? Bool {
+                session.prefersEphemeralWebBrowserSession = preferEphemeral
+            }
             session.presentationContextProvider = self
 
             session.start()
@@ -46,6 +48,6 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, ASWebAuthentication
 
     @available(macOS 10.15, *)
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return self.view.window ?? NSApplication.shared.windows.first { $0.isKeyWindow } ?? ASPresentationAnchor()
+        return NSApplication.shared.windows.first { $0.isKeyWindow } ?? ASPresentationAnchor()
     }
 }

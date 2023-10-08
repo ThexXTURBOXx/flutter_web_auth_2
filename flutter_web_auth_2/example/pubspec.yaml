@@ -1,5 +1,6 @@
 name: flutter_web_auth_2_example
 description: Demonstrates how to use the flutter_web_auth_2 plugin.
+version: 1.0.0+1
 publish_to: 'none'
 
 environment:
