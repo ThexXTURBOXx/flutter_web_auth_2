@@ -185,12 +185,11 @@ When you use this package for the first time, you may experience some problems. 
 
 ### General troubleshooting steps
 
-1. Stop the application.
+1. Stop the application if it is running.
 2. Run the following commands:
    - `flutter clean`
    - `flutter pub upgrade`
 3. Rerun the application after executing the above commands. Sometimes, they work wonders!
-
 
 ### Troubleshooting `callbackUrlScheme`
 
