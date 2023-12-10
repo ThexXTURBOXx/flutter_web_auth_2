@@ -156,22 +156,33 @@ On the Web platform, an endpoint must be created that captures the callback URL 
 <title>Authentication complete</title>
 <p>Authentication is complete. If this does not happen automatically, please close the window.</p>
 <script>
-  if (window.opener) {
-    window.opener.postMessage({
+  function postAuthenticationMessage() {
+    const message = {
       'flutter-web-auth-2': window.location.href
-    }, window.location.origin);
-  } else {
-    localStorage.setItem('flutter-web-auth-2', window.location.href);
+    };
+
+    if (window.opener) {
+      window.opener.postMessage(message, window.location.origin);
+      window.close();
+    } else if (window.parent && window.parent !== window) {
+      window.parent.postMessage(message, window.location.origin);
+    } else {
+      localStorage.setItem('flutter-web-auth-2', window.location.href);
+      window.close();
+    }
   }
-  window.close();
+
+  postAuthenticationMessage();
 </script>
 ```
+
+This HTML file is designed to handle both traditional window-based and iframe-based authentication flows. The JavaScript code checks the context and sends the authentication response accordingly.
 
 The redirect URL passed to the authentication service must be the same as the URL the application is running on (schema, host, port if necessary) and the path must point to the generated HTML file, in this case `/auth.html`. The `callbackUrlScheme` parameter of the `authenticate()` method does not take this into account, so it is possible to use a schema for native platforms in the code.
 
 For the Sign in with Apple in web_message response mode, postMessage from https://appleid.apple.com is also captured, and the authorisation object is returned as a URL fragment encoded as a query string (for compatibility with other providers).
 
-If you want to pass additional parameters to the URL open call, you can do so in the `authenticate` function using the parameter `windowName` from the options.
+Additional parameters for the URL open call can be passed in the `authenticate` function using the `windowName` parameter from the options. The `silentAuth` parameter can be used to enable silent authentication within a hidden iframe, rather than opening a new window or tab. This is particularly useful for scenarios where a full-page redirect is not desirable. Setting this parameter to true allows for a seamless user experience by performing authentication in the background, making it ideal for token refreshes or maintaining user sessions without requiring explicit interaction from the user.
 
 ### Windows and Linux
 

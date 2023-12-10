@@ -46,10 +46,50 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
   }) async {
     final parsedOptions = FlutterWebAuth2Options.fromJson(options);
 
-    await launchUrl(
-      Uri.parse(url),
-      webOnlyWindowName: parsedOptions.windowName,
-    );
+    if (parsedOptions.silentAuth) {
+      final authIframe = IFrameElement()
+        ..src = url
+        ..style.display = 'none';
+
+      document.body?.append(authIframe);
+
+      final completer = Completer<String>();
+      StreamSubscription? messageSubscription;
+      Timer? responseTimeoutTimer;
+
+      messageSubscription = window.onMessage.listen((messageEvent) {
+        if (messageEvent.origin ==
+            (parsedOptions.debugOrigin ?? Uri.base.origin)) {
+          final flutterWebAuthMessage = messageEvent.data['flutter-web-auth-2'];
+          if (flutterWebAuthMessage is String) {
+            authIframe.remove();
+            completer.complete(flutterWebAuthMessage);
+            responseTimeoutTimer?.cancel();
+            messageSubscription?.cancel();
+          }
+        }
+      });
+
+      // Add a timeout for the iframe response
+      responseTimeoutTimer =
+          Timer(Duration(seconds: parsedOptions.timeout), () {
+        authIframe.remove();
+        messageSubscription?.cancel();
+        completer.completeError(
+          PlatformException(
+            code: 'timeout',
+            message: 'Timeout waiting for the iframe response',
+          ),
+        );
+      });
+
+      return completer.future;
+    } else {
+      await launchUrl(
+        Uri.parse(url),
+        webOnlyWindowName: parsedOptions.windowName,
+      );
+    }
 
     // Remove the old record if it exists
     const storageKey = 'flutter-web-auth-2';
