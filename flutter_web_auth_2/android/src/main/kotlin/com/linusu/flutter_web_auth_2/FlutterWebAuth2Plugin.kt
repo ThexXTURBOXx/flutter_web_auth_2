@@ -12,18 +12,10 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.plugin.common.PluginRegistry.Registrar
 
 class FlutterWebAuth2Plugin(private var context: Context? = null, private var channel: MethodChannel? = null): MethodCallHandler, FlutterPlugin {
   companion object {
     val callbacks = mutableMapOf<String, Result>()
-
-    @JvmStatic
-    fun registerWith(registrar: Registrar) {
-        val plugin = FlutterWebAuth2Plugin()
-        plugin.initInstance(registrar.messenger(), registrar.context())
-    }
-
   }
 
   fun initInstance(messenger: BinaryMessenger, context: Context) {
