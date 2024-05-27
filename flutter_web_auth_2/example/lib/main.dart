@@ -126,6 +126,8 @@ class MyAppState extends State<MyApp> {
         callbackUrlScheme: 'foobar',
         options: const FlutterWebAuth2Options(
           timeout: 5, // example: 5 seconds timeout
+          //Set Android Browser priority
+          // customTabsPackageOrder: ['com.android.chrome'],
         ),
       );
       setState(() {
@@ -139,7 +141,8 @@ class MyAppState extends State<MyApp> {
   }
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
+  Widget build(BuildContext context) =>
+      MaterialApp(
         home: Scaffold(
           appBar: AppBar(
             title: const Text('Web Auth 2 example'),
