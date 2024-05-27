@@ -72,11 +72,11 @@ class FlutterWebAuth2Plugin(
     }
 
     private fun findTargetPackageName(options: Map<String, Any>): String? {
-        val chromePackage = "com.android.chrome"
-        //if installed chrome, use chrome at first
-        if (isSupportCustomTabs(chromePackage)) {
-            return chromePackage
-        }
+//        val chromePackage = "com.android.chrome"
+//        //if installed chrome, use chrome at first
+//        if (isSupportCustomTabs(chromePackage)) {
+//            return chromePackage
+//        }
 
         //check default browser
         val defaultBrowserSupported = CustomTabsClient.getPackageName(context!!, emptyList<String>()) != null
