@@ -52,7 +52,7 @@ class FlutterWebAuth2Plugin(
                 intent.intent.addFlags(options["intentFlags"] as Int)
                 intent.intent.putExtra("android.support.customtabs.extra.KEEP_ALIVE", keepAliveIntent)
 
-                val targetPackage = findTargetPackageName(options)
+                val targetPackage = findTargetBrowserPackageName(options)
                 if (targetPackage != null) {
                     intent.intent.setPackage(targetPackage)
                 }
@@ -71,32 +71,43 @@ class FlutterWebAuth2Plugin(
         }
     }
 
-    private fun findTargetPackageName(options: Map<String, Any>): String? {
-//        val chromePackage = "com.android.chrome"
-//        //if installed chrome, use chrome at first
-//        if (isSupportCustomTabs(chromePackage)) {
-//            return chromePackage
-//        }
-
-        //check default browser
-        val defaultBrowserSupported = CustomTabsClient.getPackageName(context!!, emptyList<String>()) != null
-        if (defaultBrowserSupported) {
-            return null;
+    /**
+     * Find Support CustomTabs Browser.
+     *
+     * Priority:
+     * 1. Chrome
+     * 2. Custom Browser Order
+     * 3. default Browser
+     * 4. Installed Browser
+     */
+    private fun findTargetBrowserPackageName(options: Map<String, Any>): String? {
+        val chromePackage = "com.android.chrome"
+        //if installed chrome, use chrome at first
+        if (isSupportCustomTabs(chromePackage)) {
+            return chromePackage
         }
 
         @Suppress("UNCHECKED_CAST")
         val customTabsPackageOrder = (options["customTabsPackageOrder"] as Iterable<String>?) ?: emptyList()
         //check target browser
         var targetPackage = customTabsPackageOrder.firstOrNull { isSupportCustomTabs(it) }
-        if (targetPackage == null) {
-            //check installed browser
-            val allBrowsers = findSupportCustomTabsPackage()
-            targetPackage = allBrowsers.firstOrNull { isSupportCustomTabs(it) }
+        if (targetPackage != null) {
+            return targetPackage
         }
+
+        //check default browser
+        val defaultBrowserSupported = CustomTabsClient.getPackageName(context!!, emptyList<String>()) != null
+        if (defaultBrowserSupported) {
+            return null;
+        }
+        //check installed browser
+        val allBrowsers = getInstalledBrowsers()
+        targetPackage = allBrowsers.firstOrNull { isSupportCustomTabs(it) }
+
         return targetPackage
     }
 
-    private fun findSupportCustomTabsPackage(): List<String> {
+    private fun getInstalledBrowsers(): List<String> {
         // Get all apps that can handle VIEW intents
         val activityIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://"))
         val packageManager = context!!.packageManager
