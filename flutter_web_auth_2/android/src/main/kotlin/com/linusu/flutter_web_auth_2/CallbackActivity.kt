@@ -1,11 +1,14 @@
 package com.linusu.flutter_web_auth_2
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 
 class CallbackActivity : Activity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -15,8 +18,12 @@ class CallbackActivity : Activity() {
         if (scheme != null) {
             FlutterWebAuth2Plugin.callbacks.remove(scheme)?.success(url.toString())
         }
-
-        finishAndRemoveTask()
+        @SuppressLint("ObsoleteSdkInt")
+        if (Build.VERSION.SDK_INT >= 21) {
+            finishAndRemoveTask()
+        } else {
+            finish()
+        }
     }
 
 
