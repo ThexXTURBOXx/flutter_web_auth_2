@@ -137,7 +137,11 @@ class FlutterWebAuth2Options {
   /// described in https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/25
   final bool useWebview;
 
-  /// Only for Android , Set Android Browser priority, Custom browser packageName.
+  /// **Only has an effect on Android!**
+  /// Sets the Android browser priority for opening custom tabs.
+  /// Needs to be a list of packages providing a custom tabs
+  /// service. If a browser is not installed, the next on the list
+  /// is tested etc.
   final List<String>? customTabsPackageOrder;
 
   /// Convert this instance to JSON format.

@@ -18,12 +18,7 @@ class CallbackActivity : Activity() {
         if (scheme != null) {
             FlutterWebAuth2Plugin.callbacks.remove(scheme)?.success(url.toString())
         }
-        @SuppressLint("ObsoleteSdkInt")
-        if (Build.VERSION.SDK_INT >= 21) {
-            finishAndRemoveTask()
-        } else {
-            finish()
-        }
+        finishAndRemoveTask()
     }
 
 
