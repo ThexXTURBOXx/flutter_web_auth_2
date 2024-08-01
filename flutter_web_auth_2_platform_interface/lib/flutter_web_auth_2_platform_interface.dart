@@ -43,11 +43,15 @@ abstract class FlutterWebAuth2Platform extends PlatformInterface {
     required String url,
     required String callbackUrlScheme,
     required Map<String, dynamic> options,
+    String? host,
+    String? path,
   }) =>
       _instance.authenticate(
         url: url,
         callbackUrlScheme: callbackUrlScheme,
         options: options,
+        host: host,
+        path: path,
       );
 
   /// The plugin may need to store the resulting callbacks in order to pass
