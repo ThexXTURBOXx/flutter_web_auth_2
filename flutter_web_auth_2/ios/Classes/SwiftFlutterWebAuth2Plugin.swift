@@ -19,9 +19,9 @@ public class SwiftFlutterWebAuth2Plugin: NSObject, FlutterPlugin {
            let urlString = arguments["url"] as? String,
            let url = URL(string: urlString),
            let callbackURLScheme = arguments["callbackUrlScheme"] as? String,
-           let options = arguments["options"]?["iOSOptions"] as? [String: AnyObject],
-           let host = options["host"] as? String,
-           let path = options["path"] as? String
+           let options = arguments["options"] as? [String: AnyObject],
+           let host = options["httpsHost"] as? String,
+           let path = options["httpsPath"] as? String
         {
             var sessionToKeepAlive: Any? // if we do not keep the session alive, it will get closed immediately while showing the dialog
             completionHandler = { (url: URL?, err: Error?) in
