@@ -145,14 +145,14 @@ class FlutterWebAuth2Options {
   /// String specifying the **host** of the URL that the page will redirect to
   /// upon successful authentication (callback URL).
   /// When `callbackUrlScheme` is `https`, this **must** be specified on
-  /// Apple devices running iOS or macOS >= 17.4.
+  /// Apple devices running iOS >= 17.4 or macOS >= 14.4.
   final String? httpsHost;
 
   /// **Only has an effect on iOS and MacOS!**
   /// String specifying the **path** of the URL that the page will redirect to
   /// upon successful authentication (callback URL).
   /// When `callbackUrlScheme` is `https`, this **must** be specified on
-  /// Apple devices running iOS or macOS >= 17.4.
+  /// Apple devices running iOS >= 17.4 or macOS >= 14.4.
   final String? httpsPath;
 
   /// **Only has an effect on Android!**

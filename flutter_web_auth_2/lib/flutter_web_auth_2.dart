@@ -57,8 +57,8 @@ class FlutterWebAuth2 {
   /// that the page will redirect to upon successful authentication.
   /// If it is `https`, you also need to specify
   /// [FlutterWebAuth2Options.httpsHost] and [FlutterWebAuth2Options.httpsPath]
-  /// on Apple devices running iOS or macOS >= 17.4. This allows for easy
-  /// integration of Universal links.
+  /// on Apple devices running iOS >= 17.4 or macOS >= 14.4. This allows for
+  /// easy integration of Universal links.
   ///
   /// [options] can be used to specify either both general and
   /// platform-specific settings.
