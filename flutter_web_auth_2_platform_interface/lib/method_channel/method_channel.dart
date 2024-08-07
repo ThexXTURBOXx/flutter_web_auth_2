@@ -10,15 +10,11 @@ class FlutterWebAuth2MethodChannel extends FlutterWebAuth2Platform {
     required String url,
     required String callbackUrlScheme,
     required Map<String, dynamic> options,
-    String? host,
-    String? path,
   }) async =>
       await _channel.invokeMethod<String>('authenticate', <String, dynamic>{
         'url': url,
         'callbackUrlScheme': callbackUrlScheme,
         'options': options,
-        'host': host,
-        'path': path,
       }) ??
       '';
 

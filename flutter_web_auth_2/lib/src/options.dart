@@ -48,7 +48,6 @@ const _defaultLandingPage = '''
 class FlutterWebAuth2Options {
   /// Construct an instance and specify the wanted options.
   const FlutterWebAuth2Options({
-    bool? preferEphemeral,
     this.debugOrigin,
     int? intentFlags,
     this.windowName,
@@ -56,18 +55,18 @@ class FlutterWebAuth2Options {
     String? landingPageHtml,
     bool? silentAuth,
     bool? useWebview,
+    FlutterWebAuth2IOSOptions? iOSOptions,
     this.customTabsPackageOrder,
-  })  : preferEphemeral = preferEphemeral ?? false,
-        intentFlags = intentFlags ?? defaultIntentFlags,
+  })  : intentFlags = intentFlags ?? defaultIntentFlags,
         timeout = timeout ?? 5 * 60,
         landingPageHtml = landingPageHtml ?? _defaultLandingPage,
         silentAuth = silentAuth ?? false,
-        useWebview = useWebview ?? true;
+        useWebview = useWebview ?? true,
+        iOSOptions = iOSOptions ?? const FlutterWebAuth2IOSOptions();
 
   /// Construct an instance from JSON format.
   FlutterWebAuth2Options.fromJson(Map<String, dynamic> json)
       : this(
-          preferEphemeral: json['preferEphemeral'],
           debugOrigin: json['debugOrigin'],
           intentFlags: json['intentFlags'],
           windowName: json['windowName'],
@@ -76,12 +75,10 @@ class FlutterWebAuth2Options {
           silentAuth: json['silentAuth'],
           useWebview: json['useWebview'],
           customTabsPackageOrder: json['customTabsPackageOrder'],
+          iOSOptions: (json['iOSOptions'] != null) //
+              ? FlutterWebAuth2IOSOptions.fromJson(json['iOSOptions'])
+              : null,
         );
-
-  /// **Only has an effect on iOS and MacOS!**
-  /// If this is `true`, an ephemeral web browser session
-  /// will be used where possible (`prefersEphemeralWebBrowserSession`).
-  final bool preferEphemeral;
 
   /// **Only has an effect on Web!**
   /// Can be used to override the origin of the redirect URL.
@@ -96,7 +93,7 @@ class FlutterWebAuth2Options {
   /// or by using the flags from the `Flag` class from
   /// [android_intent_plus](https://pub.dev/packages/android_intent_plus).
   /// Use [ephemeralIntentFlags] if you want similar behaviour to
-  /// [preferEphemeral] on Android.
+  /// [FlutterWebAuth2IOSOptions.preferEphemeral] on Android.
   final int intentFlags;
 
   /// **Only has an effect on Web!**
@@ -144,9 +141,13 @@ class FlutterWebAuth2Options {
   /// is tested etc.
   final List<String>? customTabsPackageOrder;
 
+  /// Set of settings for iOS.
+  ///
+  /// Contains additional properties to handle `Universal Links` properly.
+  final FlutterWebAuth2IOSOptions iOSOptions;
+
   /// Convert this instance to JSON format.
   Map<String, dynamic> toJson() => {
-        'preferEphemeral': preferEphemeral,
         'debugOrigin': debugOrigin,
         'intentFlags': intentFlags,
         'windowName': windowName,
@@ -155,5 +156,46 @@ class FlutterWebAuth2Options {
         'silentAuth': silentAuth,
         'useWebview': useWebview,
         'customTabsPackageOrder': customTabsPackageOrder,
+        'iOSOptions': iOSOptions.toJson(),
+      };
+}
+
+/// Provides iOS configuration options.
+class FlutterWebAuth2IOSOptions {
+  /// Construct an instance and specify the wanted options.
+  const FlutterWebAuth2IOSOptions({
+    this.preferEphemeral = false,
+    this.host = '',
+    this.path = '',
+  });
+
+  /// Construct an instance from JSON format.
+  FlutterWebAuth2IOSOptions.fromJson(Map<String, dynamic> json)
+      : this(
+          preferEphemeral: json['preferEphemeral'],
+          host: json['host'],
+          path: json['path'],
+        );
+
+  /// **Has effect on iOS and MacOS!**
+  /// If this is `true`, an ephemeral web browser session
+  /// will be used where possible (`prefersEphemeralWebBrowserSession`).
+  final bool preferEphemeral;
+
+  /// String specifying the **host** of the URL
+  /// that the page will redirect to upon successful authentication.
+  /// When `callbackUrlScheme` is `https`, this **must** be specified.
+  final String? host;
+
+  /// String specifying the **path** of the URL
+  /// that the page will redirect to upon successful authentication.
+  /// When `callbackUrlScheme` is `https`, this **must** be specified.
+  final String? path;
+
+  /// Convert this instance to JSON format.
+  Map<String, dynamic> toJson() => {
+        'preferEphemeral': preferEphemeral,
+        'host': host,
+        'path': path,
       };
 }
