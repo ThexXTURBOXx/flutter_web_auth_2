@@ -82,10 +82,6 @@ class FlutterWebAuth2Plugin(
      */
     private fun findTargetBrowserPackageName(options: Map<String, Any>): String? {
         val chromePackage = "com.android.chrome"
-        //if installed chrome, use chrome at first
-        if (isSupportCustomTabs(chromePackage)) {
-            return chromePackage
-        }
 
         @Suppress("UNCHECKED_CAST")
         val customTabsPackageOrder = (options["customTabsPackageOrder"] as Iterable<String>?) ?: emptyList()
@@ -104,6 +100,9 @@ class FlutterWebAuth2Plugin(
         val allBrowsers = getInstalledBrowsers()
         targetPackage = allBrowsers.firstOrNull { isSupportCustomTabs(it) }
 
+        if (targetPackage == null) {
+            targetPackage = chromePackage
+        }
         return targetPackage
     }
 
