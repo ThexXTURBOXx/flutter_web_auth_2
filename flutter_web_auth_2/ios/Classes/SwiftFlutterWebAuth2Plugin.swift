@@ -87,18 +87,25 @@ public class SwiftFlutterWebAuth2Plugin: NSObject, FlutterPlugin {
                 if #available(iOS 13, *) {
                     var rootViewController: UIViewController? = nil
 
+                    // Try to get root view controller from the scene delegate if available
+                    if rootViewController == nil {
+	                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+	                        rootViewController = scene.windows.first?.rootViewController
+	                    }
+                    }
+
                     // FlutterViewController
-                    if (rootViewController == nil) {
+                    if rootViewController == nil {
                         rootViewController = UIApplication.shared.delegate?.window??.rootViewController as? FlutterViewController
                     }
 
                     // UIViewController
-                    if (rootViewController == nil) {
+                    if rootViewController == nil {
                         rootViewController = UIApplication.shared.keyWindow?.rootViewController
                     }
 
                     // ACQUIRE_ROOT_VIEW_CONTROLLER_FAILED
-                    if (rootViewController == nil) {
+                    if rootViewController == nil {
                         result(FlutterError.acquireRootViewControllerFailed)
                         return
                     }
