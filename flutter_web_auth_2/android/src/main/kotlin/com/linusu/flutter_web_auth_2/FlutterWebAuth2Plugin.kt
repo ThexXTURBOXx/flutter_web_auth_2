@@ -44,10 +44,14 @@ class FlutterWebAuth2Plugin(
                 val url = Uri.parse(call.argument("url"))
                 val callbackUrlScheme = call.argument<String>("callbackUrlScheme")!!
                 val options = call.argument<Map<String, Any>>("options")!!
+                val preferEphemeral = options.get("preferEphemeral")!! as Boolean
 
                 callbacks[callbackUrlScheme] = resultCallback
                 val intent = CustomTabsIntent.Builder().build()
                 val keepAliveIntent = Intent(context, KeepAliveService::class.java)
+                if (preferEphemeral) {
+                    intent.intent.setPackage("com.android.chrome");
+                }
 
                 intent.intent.addFlags(options["intentFlags"] as Int)
                 intent.intent.putExtra("android.support.customtabs.extra.KEEP_ALIVE", keepAliveIntent)
@@ -82,7 +86,8 @@ class FlutterWebAuth2Plugin(
      */
     private fun findTargetBrowserPackageName(options: Map<String, Any>): String? {
         @Suppress("UNCHECKED_CAST")
-        val customTabsPackageOrder = (options["customTabsPackageOrder"] as Iterable<String>?) ?: emptyList()
+        val customTabsPackageOrder =
+            (options["customTabsPackageOrder"] as Iterable<String>?) ?: emptyList()
         // Check target browser
         var targetPackage = customTabsPackageOrder.firstOrNull { isSupportCustomTabs(it) }
         if (targetPackage != null) {
@@ -90,7 +95,8 @@ class FlutterWebAuth2Plugin(
         }
 
         // Check default browser
-        val defaultBrowserSupported = CustomTabsClient.getPackageName(context!!, emptyList<String>()) != null
+        val defaultBrowserSupported =
+            CustomTabsClient.getPackageName(context!!, emptyList<String>()) != null
         if (defaultBrowserSupported) {
             return null;
         }
@@ -116,23 +122,24 @@ class FlutterWebAuth2Plugin(
             packageManager.queryIntentActivities(activityIntent, 0)
         }
 
-        val allBrowser = viewIntentHandlers.map { it.activityInfo.packageName }.sortedWith(compareBy {
-            if (setOf(
-                    "com.android.chrome",
-                    "com.chrome.beta",
-                    "com.chrome.dev",
-                    "com.microsoft.emmx"
-                ).contains(it)
-            ) {
-                return@compareBy -1
-            }
+        val allBrowser =
+            viewIntentHandlers.map { it.activityInfo.packageName }.sortedWith(compareBy {
+                if (setOf(
+                        "com.android.chrome",
+                        "com.chrome.beta",
+                        "com.chrome.dev",
+                        "com.microsoft.emmx"
+                    ).contains(it)
+                ) {
+                    return@compareBy -1
+                }
 
-            // Firefox default is not enabled, must enable in the browser settings.
-            if (setOf("org.mozilla.firefox").contains(it)) {
-                return@compareBy 1
-            }
-            return@compareBy 0
-        })
+                // Firefox default is not enabled, must enable in the browser settings.
+                if (setOf("org.mozilla.firefox").contains(it)) {
+                    return@compareBy 1
+                }
+                return@compareBy 0
+            })
 
         return allBrowser
     }
