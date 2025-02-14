@@ -1,3 +1,7 @@
+## 3.1.2-without-v1
+
+- 💥 Remove Android embedding v1 support (in accordance with Flutter `3.22.0`)
+
 ## 3.1.2
 
 - 🐛 Fix recursion errors in Flutter `3.22.0`
