@@ -4,14 +4,11 @@ Thank you for considering contributing to `flutter_web_auth_2`! We appreciate yo
 
 ## Table of Contents
 
-- [Code of Conduct](#code-of-conduct)
 - [How to Contribute](#how-to-contribute)
   - [Setting Up the Development Environment](#setting-up-the-development-environment)
   - [Making Changes](#making-changes)
-  - [Testing](#testing)
   - [Documentation](#documentation)
   - [Pull Requests](#pull-requests)
-- [Community and Communication](#community-and-communication)
 - [License](#license)
 
 ## How to Contribute
