@@ -8,11 +8,11 @@ issue_tracker: https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues
 funding:
   - https://github.com/sponsors/ThexXTURBOXx
 screenshots:
-  - description: 'flutter_web_auth_2 in action on Android'
+  - description: "flutter_web_auth_2 in action on Android"
     path: screen-android.gif
-  - description: 'flutter_web_auth_2 in action on iOS'
+  - description: "flutter_web_auth_2 in action on iOS"
     path: screen-ios.gif
-  - description: 'flutter_web_auth_2 in action on MacOS'
+  - description: "flutter_web_auth_2 in action on MacOS"
     path: screen-macos.gif
 topics:
   - authentication
@@ -22,7 +22,7 @@ topics:
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=3.24.0"
 
 dependencies:
   desktop_webview_window: ^0.2.3

@@ -1,35 +1,16 @@
 PODS:
   - Flutter (1.0.0)
-  - flutter_web_auth_2 (3.0.0):
-    - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
-  - url_launcher_ios (0.0.1):
-    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - flutter_web_auth_2 (from `.symlinks/plugins/flutter_web_auth_2/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
-  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  flutter_web_auth_2:
-    :path: ".symlinks/plugins/flutter_web_auth_2/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
-  url_launcher_ios:
-    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_web_auth_2: 051cf9f5dc366f31b5dcc4e2952c2b954767be8a
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 
-PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
+PODFILE CHECKSUM: 89c2d0a48e0e7e579b0121755579dbc730757d4e
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
