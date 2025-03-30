@@ -6,7 +6,7 @@
 
 A Flutter plugin for authenticating a user with a web service, even if the web service is run by a third party. Most commonly used with OAuth2, but can be used with any web flow that can redirect to a custom scheme.
 
-In the background, this plugin uses [`ASWebAuthenticationSession`](https://developer.apple.com/documentation/authenticationservices/aswebauthenticationsession) on iOS 12+ and macOS 10.15+, [`SFAuthenticationSession`](https://developer.apple.com/documentation/safariservices/sfauthenticationsession) on iOS 11, [Chrome Custom Tabs](https://developer.chrome.com/docs/android/custom-tabs/) on Android and opens a new window on Web. You can build it with iOS 8+, but it is currently only supported by iOS 11 or higher.
+In the background, this plugin uses [`ASWebAuthenticationSession`](https://developer.apple.com/documentation/authenticationservices/aswebauthenticationsession) on iOS 12+ and macOS 10.15+, [`SFAuthenticationSession`](https://developer.apple.com/documentation/safariservices/sfauthenticationsession) on iOS 11, [Chrome Auth Tab](https://developer.chrome.com/docs/android/custom-tabs/guide-auth-tab) on Android and opens a new window on Web. You can build it with iOS 8+, but it is currently only supported by iOS 11 or higher.
 
 <!-- TODO: Replace with a nicer GIF
 | **iOS**                | **Android**                    |
@@ -88,6 +88,7 @@ final accessToken = jsonDecode(response.body)['access_token'] as String;
 
 The following constraints have been added in `5.0.0`:
 - The existing Android approach has been replaced with a new (improved) one (no migration necessary; is automatically used)
+- Android now uses Auth Tab, `httpsHost` and `httpsPath` are now required on Android if you are using the `https` `callbackUrlScheme`
 - Dart SDK `>=3.5.0` is now required (due to migration to melos `7.x`)
 
 ### Upgrading to `4.x`

@@ -45,7 +45,7 @@ class FlutterWebAuth2Plugin(
         when (call.method) {
             "authenticate" -> {
                 val url = Uri.parse(call.argument("url"))
-                val callbackUrlScheme = call.argument<String>("callbackUrlScheme")!!
+                val callbackUrlScheme: String = call.argument<String>("callbackUrlScheme")!!
                 val options = call.argument<Map<String, Any>>("options")!!
 
                 callbacks[callbackUrlScheme] = resultCallback
@@ -53,6 +53,9 @@ class FlutterWebAuth2Plugin(
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_URI,url)
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_OPTION_INTENT_FLAGS, options["intentFlags"] as Int)
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_OPTION_TARGET_PACKAGE, findTargetBrowserPackageName(options))
+                    putExtra(AuthenticationManagementActivity.KEY_AUTH_CALLBACK_SCHEME, callbackUrlScheme)
+                    putExtra(AuthenticationManagementActivity.KEY_AUTH_CALLBACK_HOST, options["httpsHost"] as String?)
+                    putExtra(AuthenticationManagementActivity.KEY_AUTH_CALLBACK_PATH, options["httpsPath"] as String?)
                 })
             }
 
