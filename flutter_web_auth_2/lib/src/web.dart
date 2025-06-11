@@ -92,9 +92,9 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
       return completer.future;
     }
 
-    await launchUrl(
-      Uri.parse(url),
-      webOnlyWindowName: parsedOptions.windowName,
+    final authWindow = window.open(
+      url, 
+      parsedOptions.windowName ?? '_blank',
     );
 
     // Remove the old record if it exists
@@ -114,6 +114,17 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
           window.localStorage.removeItem(storageKey);
           messageSubscription?.cancel();
           timer.cancel();
+        } else if (authWindow?.closed ?? true) {
+          // window has been closed w/o callback, so maybe user has just closed it
+          // or login failed for some reason (e.g. wrong redirect url)
+          messageSubscription?.cancel();
+          timer.cancel();
+          completer.completeError(
+            PlatformException(
+              code: 'error',
+              message: 'Auth window closed without callback',
+            ),
+          );
         } else if (timer.tick >= parsedOptions.timeout) {
           messageSubscription?.cancel();
           timer.cancel();
