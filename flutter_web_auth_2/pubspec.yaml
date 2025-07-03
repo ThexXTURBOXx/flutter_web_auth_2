@@ -37,7 +37,7 @@ dependencies:
   window_to_front: ^0.0.3
 
 dev_dependencies:
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
 
