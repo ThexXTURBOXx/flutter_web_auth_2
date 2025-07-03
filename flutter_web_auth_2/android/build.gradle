@@ -1,5 +1,5 @@
-group 'com.linusu.flutter_web_auth_2'
-version '1.0-SNAPSHOT'
+group = 'com.linusu.flutter_web_auth_2'
+version = '1.0-SNAPSHOT'
 
 buildscript {
     ext.kotlin_version = '1.7.22'
@@ -25,15 +25,15 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdk 35
+    compileSdk = 36
 
     if (project.android.hasProperty("namespace")) {
-        namespace 'com.linusu.flutter_web_auth_2'
+        namespace = 'com.linusu.flutter_web_auth_2'
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     kotlinOptions {
@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        minSdk 21
+        minSdk = 21
     }
 
     dependencies {

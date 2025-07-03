@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
     namespace 'com.linusu.flutter_web_auth_2_example'
 
     compileOptions {
@@ -47,7 +47,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.linusu.flutter_web_auth_2_example"
         minSdk 21
-        targetSdk 35
+        targetSdk 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
