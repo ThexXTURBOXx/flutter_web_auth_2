@@ -33,7 +33,7 @@ class FlutterWebAuth2 {
   static final _OnAppLifecycleResumeObserver _resumedObserver =
       _OnAppLifecycleResumeObserver(_cleanUpDanglingCalls);
 
-  /// Cancels authontication session on iOS.
+  /// Cancels the currently open authentication session on iOS.
   static Future<void> cancel() async {
     await _platform.cancel();
   }

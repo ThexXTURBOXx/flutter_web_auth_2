@@ -56,6 +56,6 @@ abstract class FlutterWebAuth2Platform extends PlatformInterface {
   /// terminate all `authenticate` calls with an error.
   Future clearAllDanglingCalls() => _instance.clearAllDanglingCalls();
 
-  /// Dismisses the currently open authentication session on iOS.
+  /// Cancels the currently open authentication session on iOS.
   Future<void> cancel() => throw UnimplementedError('Only supported on iOS at the moment.');
 }
