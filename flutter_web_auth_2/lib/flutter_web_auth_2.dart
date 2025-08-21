@@ -28,11 +28,15 @@ class _OnAppLifecycleResumeObserver extends WidgetsBindingObserver {
 class FlutterWebAuth2 {
   static final RegExp _schemeRegExp = RegExp(r'^[a-z][a-z\d+.-]*$');
 
-  static FlutterWebAuth2Platform get _platform =>
-      FlutterWebAuth2Platform.instance;
+  static FlutterWebAuth2Platform get _platform => FlutterWebAuth2Platform.instance;
 
   static final _OnAppLifecycleResumeObserver _resumedObserver =
       _OnAppLifecycleResumeObserver(_cleanUpDanglingCalls);
+
+  /// Cancels authontication session on iOS.
+  static Future<void> cancel() async {
+    await _platform.cancel();
+  }
 
   static void _assertCallbackScheme(String callbackUrlScheme) {
     if ((PlatformIs.web || (!PlatformIs.windows && !PlatformIs.linux)) &&

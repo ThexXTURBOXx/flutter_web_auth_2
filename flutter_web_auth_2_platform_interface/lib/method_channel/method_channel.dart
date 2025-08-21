@@ -19,6 +19,8 @@ class FlutterWebAuth2MethodChannel extends FlutterWebAuth2Platform {
       '';
 
   @override
-  Future clearAllDanglingCalls() async =>
-      _channel.invokeMethod('cleanUpDanglingCalls');
+  Future clearAllDanglingCalls() async => _channel.invokeMethod('cleanUpDanglingCalls');
+
+  @override
+  Future<void> cancel() => _channel.invokeMethod('cancel');
 }

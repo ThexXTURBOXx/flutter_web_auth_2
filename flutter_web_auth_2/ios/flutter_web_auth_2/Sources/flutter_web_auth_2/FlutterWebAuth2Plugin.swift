@@ -3,6 +3,7 @@ import Flutter
 import SafariServices
 import UIKit
 
+
 public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "flutter_web_auth_2", binaryMessenger: registrar.messenger())
@@ -12,6 +13,7 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
     }
 
     var completionHandler: ((URL?, Error?) -> Void)?
+    var sessionToKeepAlive: Any? // Keep track of the session to cancel it later
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if call.method == "authenticate",
@@ -21,17 +23,16 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
            let callbackURLScheme = arguments["callbackUrlScheme"] as? String,
            let options = arguments["options"] as? [String: AnyObject]
         {
-            var sessionToKeepAlive: Any? // if we do not keep the session alive, it will get closed immediately while showing the dialog
             completionHandler = { (url: URL?, err: Error?) in
                 self.completionHandler = nil
 
-                if (sessionToKeepAlive != nil) {
+                if let session = self.sessionToKeepAlive {
                     if #available(iOS 12, *) {
-                        (sessionToKeepAlive as! ASWebAuthenticationSession).cancel()
+                        (session as! ASWebAuthenticationSession).cancel()
                     } else if #available(iOS 11, *) {
-                        (sessionToKeepAlive as! SFAuthenticationSession).cancel()
+                        (session as! SFAuthenticationSession).cancel()
                     }
-                    sessionToKeepAlive = nil
+                    self.sessionToKeepAlive = nil
                 }
 
                 if let err = err {
@@ -62,43 +63,54 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
             }
 
             if #available(iOS 12, *) {
-                var _session: ASWebAuthenticationSession? = nil
+                var session: ASWebAuthenticationSession? = nil
                 if #available(iOS 17.4, *) {
                     if (callbackURLScheme == "https") {
                         guard let host = options["httpsHost"] as? String else {
                             result(FlutterError.invalidHttpsHostError)
-                            return 
+                            return
                         }
 
                         guard let path = options["httpsPath"] as? String else {
                             result(FlutterError.invalidHttpsPathError)
-                            return 
+                            return
                         }
 
-                        _session = ASWebAuthenticationSession(url: url, callback: ASWebAuthenticationSession.Callback.https(host: host, path: path), completionHandler: completionHandler!)
+                        session = ASWebAuthenticationSession(
+                            url: url,
+                            callback: ASWebAuthenticationSession.Callback.https(host: host, path: path),
+                            completionHandler: completionHandler!
+                        )
                     } else {
-                        _session = ASWebAuthenticationSession(url: url, callback: ASWebAuthenticationSession.Callback.customScheme(callbackURLScheme), completionHandler: completionHandler!)
+                        session = ASWebAuthenticationSession(
+                            url: url,
+                            callback: ASWebAuthenticationSession.Callback.customScheme(callbackURLScheme),
+                            completionHandler: completionHandler!
+                        )
                     }
                 } else {
-                    _session = ASWebAuthenticationSession(url: url, callbackURLScheme: callbackURLScheme, completionHandler: completionHandler!)
+                    session = ASWebAuthenticationSession(
+                        url: url,
+                        callbackURLScheme: callbackURLScheme,
+                        completionHandler: completionHandler!
+                    )
                 }
-                let session = _session!
 
                 if #available(iOS 13, *) {
                     var rootViewController: UIViewController? = nil
 
                     // FlutterViewController
-                    if (rootViewController == nil) {
+                    if rootViewController == nil {
                         rootViewController = UIApplication.shared.delegate?.window??.rootViewController as? FlutterViewController
                     }
 
                     // UIViewController
-                    if (rootViewController == nil) {
+                    if rootViewController == nil {
                         rootViewController = UIApplication.shared.keyWindow?.rootViewController
                     }
 
                     // ACQUIRE_ROOT_VIEW_CONTROLLER_FAILED
-                    if (rootViewController == nil) {
+                    if rootViewController == nil {
                         result(FlutterError.acquireRootViewControllerFailed)
                         return
                     }
@@ -114,42 +126,59 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
                         result(FlutterError.acquireRootViewControllerFailed)
                         return
                     }
-                    session.presentationContextProvider = contextProvider
+                    session!.presentationContextProvider = contextProvider
                     if let preferEphemeral = options["preferEphemeral"] as? Bool {
-                        session.prefersEphemeralWebBrowserSession = preferEphemeral
+                        session!.prefersEphemeralWebBrowserSession = preferEphemeral
                     }
                 }
 
-                session.start()
-                sessionToKeepAlive = session
+                session!.start()
+                self.sessionToKeepAlive = session
             } else if #available(iOS 11, *) {
-                let session = SFAuthenticationSession(url: url, callbackURLScheme: callbackURLScheme, completionHandler: completionHandler!)
+                let session = SFAuthenticationSession(
+                    url: url,
+                    callbackURLScheme: callbackURLScheme,
+                    completionHandler: completionHandler!
+                )
                 session.start()
-                sessionToKeepAlive = session
+                self.sessionToKeepAlive = session
             } else {
                 result(FlutterError(code: "FAILED", message: "This plugin does currently not support iOS lower than iOS 11", details: nil))
             }
         } else if call.method == "cleanUpDanglingCalls" {
             // we do not keep track of old callbacks on iOS, so nothing to do here
             result(nil)
-        } else {
-            result(FlutterMethodNotImplemented)
+        } else if call.method == "cancel" {
+            cancel()
+            result(nil)
+        }
+    }
+
+    private func cancel() {
+        if let session = self.sessionToKeepAlive {
+            if #available(iOS 12, *) {
+                (session as! ASWebAuthenticationSession).cancel()
+            } else if #available(iOS 11, *) {
+                (session as! SFAuthenticationSession).cancel()
+            }
+            self.sessionToKeepAlive = nil
         }
     }
 
     public func application(
         _ application: UIApplication,
         continue userActivity: NSUserActivity,
-        restorationHandler: @escaping ([Any]) -> Void) -> Bool
-    {
+        restorationHandler: @escaping ([UIUserActivityRestoring]) -> Void
+    ) -> Bool {
         switch userActivity.activityType {
-            case NSUserActivityTypeBrowsingWeb:
-                guard let url = userActivity.webpageURL, let completionHandler = completionHandler else {
-                    return false
-                }
-                completionHandler(url, nil)
-                return true
-            default: return false
+        case NSUserActivityTypeBrowsingWeb:
+            guard let url = userActivity.webpageURL, let completionHandler = completionHandler else {
+                return false
+            }
+            completionHandler(url, nil)
+            return true
+        default:
+            return false
         }
     }
 }
