@@ -157,9 +157,13 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
     private func cancel() {
         if let session = self.sessionToKeepAlive {
             if #available(iOS 12, *) {
-                (session as! ASWebAuthenticationSession).cancel()
+                if let webAuthSession = session as? ASWebAuthenticationSession {
+                    webAuthSession.cancel()
+                }
             } else if #available(iOS 11, *) {
-                (session as! SFAuthenticationSession).cancel()
+                if let authSession = session as? SFAuthenticationSession {
+                    authSession.cancel()
+                }
             }
             self.sessionToKeepAlive = nil
         }
