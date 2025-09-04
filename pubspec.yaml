@@ -12,4 +12,4 @@ workspace:
 
 dev_dependencies:
   flutter_lints: ^6.0.0
-  melos: ^7.0.0-dev.7
+  melos: ^7.1.0
