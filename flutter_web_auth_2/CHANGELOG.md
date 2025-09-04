@@ -1,3 +1,9 @@
+## 5.0.0-alpha.4
+
+- 🌹 Update melos to regular `7.x` releases
+- 🌹 Update linter to `6.x`
+- 🌹 Fix a few Android warnings (Gradle `9.x` complaints)
+
 ## 5.0.0-alpha.3
 
 - 💥 Migrate to Swift Package Manager - see [here](https://docs.flutter.dev/packages-and-plugins/swift-package-manager/for-app-developers) for more info (Thanks to [@lishaduck](https://github.com/lishaduck) in [#165](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/165))
