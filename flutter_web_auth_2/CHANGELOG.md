@@ -1,3 +1,7 @@
+## 5.0.0-alpha.5
+
+- 🌹 Include more error details on iOS (Thanks to [@PawlikMichal25](https://github.com/PawlikMichal25) in [#179](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/179), related to [#178](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/178))
+
 ## 5.0.0-alpha.4
 
 - 🌹 Update melos to regular `7.x` releases
