@@ -25,4 +25,4 @@ jobs:
         run: melos format --output none --set-exit-if-changed
 
       - name: Analyze
-        run: melos analyze
+        run: flutter analyze
