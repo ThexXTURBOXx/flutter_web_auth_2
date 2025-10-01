@@ -6,28 +6,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-format:
-    name: Check format using flutter format
-    runs-on: ubuntu-latest
-    container: ghcr.io/cirruslabs/flutter:stable
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Install melos and initialize workspace
-        uses: bluefireteam/melos-action@v3
-      - name: Check format
-        run: melos format --output none --set-exit-if-changed
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    container: ghcr.io/cirruslabs/flutter:stable
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
       - name: Install melos and initialize workspace
         uses: bluefireteam/melos-action@v3
-      - name: Lint using flutter analyze
-        run: flutter analyze
+
+      - name: Lint
+        run: melos format --output none --set-exit-if-changed
+
+      - name: Analyze
+        run: melos analyze
