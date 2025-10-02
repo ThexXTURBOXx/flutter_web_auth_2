@@ -94,12 +94,6 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
             val intent = intentBuilder.build()
 
-            // Manually set ephemeral extra in case builder didn't set it properly
-            if (preferEphemeral) {
-                intent.intent.putExtra("androidx.browser.customtabs.extra.ENABLE_EPHEMERAL_BROWSING", true)
-                Log.d("flutter_web_auth_2", "Manually set EXTRA_ENABLE_EPHEMERAL_BROWSING")
-            }
-
             intent.intent.addFlags(intentFlags)
 
             if (targetPackage != null) {
