@@ -17,6 +17,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         const val KEY_AUTH_URI: String = "authUri"
         const val KEY_AUTH_OPTION_INTENT_FLAGS: String = "authOptionsIntentFlags"
         const val KEY_AUTH_OPTION_TARGET_PACKAGE: String = "authOptionsTargetPackage"
+        const val KEY_AUTH_OPTION_PREFER_EPHEMERAL: String = "authOptionsPreferEphemeral"
         const val KEY_AUTH_CALLBACK_SCHEME: String = "authCallbackScheme"
         const val KEY_AUTH_CALLBACK_HOST: String = "authCallbackHost"
         const val KEY_AUTH_CALLBACK_PATH: String = "authCallbackPath"
@@ -32,6 +33,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
     private lateinit var authenticationUri: Uri
     private var intentFlags: Int = 0
     private var targetPackage: String? = null
+    private var preferEphemeral: Boolean = false
     private lateinit var callbackScheme: String
     private var callbackHost: String? = null
     private var callbackPath: String? = null
@@ -78,7 +80,19 @@ class AuthenticationManagementActivity : ComponentActivity() {
         super.onResume()
 
         if (!authStarted) {
-            val intent = AuthTabIntent.Builder().build()
+            val intentBuilder = AuthTabIntent.Builder()
+
+            // Set ephemeral browsing if requested and supported
+            if (preferEphemeral) {
+                try {
+                    intentBuilder.setEphemeralBrowsingEnabled(true)
+                    Log.d("flutter_web_auth_2", "Ephemeral browsing enabled")
+                } catch (e: Exception) {
+                    Log.w("flutter_web_auth_2", "Failed to enable ephemeral browsing: ${e.message}")
+                }
+            }
+
+            val intent = intentBuilder.build()
             intent.intent.addFlags(intentFlags)
 
             if (targetPackage != null) {
@@ -112,6 +126,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
             KEY_AUTH_OPTION_TARGET_PACKAGE,
             targetPackage,
         )
+        outState.putBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, preferEphemeral)
         outState.putString(KEY_AUTH_CALLBACK_SCHEME, callbackScheme)
         outState.putString(KEY_AUTH_CALLBACK_HOST, callbackHost)
         outState.putString(KEY_AUTH_CALLBACK_PATH, callbackPath)
@@ -131,6 +146,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         } ?: throw IllegalStateException("Authentication URI is null")
         intentFlags = state.getInt(KEY_AUTH_OPTION_INTENT_FLAGS, 0)
         targetPackage = state.getString(KEY_AUTH_OPTION_TARGET_PACKAGE)
+        preferEphemeral = state.getBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, false)
         callbackScheme = state.getString(KEY_AUTH_CALLBACK_SCHEME)!!
         callbackHost = state.getString(KEY_AUTH_CALLBACK_HOST)
         callbackPath = state.getString(KEY_AUTH_CALLBACK_PATH)
