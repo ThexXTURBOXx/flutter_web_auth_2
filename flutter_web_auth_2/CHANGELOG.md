@@ -1,3 +1,7 @@
+## 5.0.0-alpha.6
+
+- 🌹 Fix ephemeral web views on Android; re-introduces `preferEphemeral` on Android for more iOS/Android parity (Thanks to [@ApofisXII](https://github.com/ApofisXII) in [#180](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/180), related to [#169](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/169))
+
 ## 5.0.0-alpha.5
 
 - 🌹 Include more error details on iOS (Thanks to [@PawlikMichal25](https://github.com/PawlikMichal25) in [#179](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/179), related to [#178](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/178))
