@@ -80,7 +80,9 @@ final response = await http.post(url, body: {
 final accessToken = jsonDecode(response.body)['access_token'] as String;
 ```
 
-**Note:** To use multiple scopes with Google, you need to encode them as a single string, separated by spaces (`%20`). For example, `scope: 'email https://www.googleapis.com/auth/userinfo.profile'`. Here is [a list of all supported scopes](https://developers.google.com/identity/protocols/oauth2/scopes).
+**Note (Google multiple scopes):** To use multiple scopes with Google, you need to encode them as a single string, separated by spaces (`%20`). For example, `scope: 'email https://www.googleapis.com/auth/userinfo.profile'`. Here is [a list of all supported scopes](https://developers.google.com/identity/protocols/oauth2/scopes).
+
+**Note (ephemeral auth):** Due to a [knownw Chrome bug](https://issuetracker.google.com/issues/444173718), when setting `preferEphemeral: true` on Android, the webview will crash on older Chrome version (minimum version required is [Chrome 141](https://developer.chrome.com/release-notes/141?hl=en)).
 
 ## Migration
 

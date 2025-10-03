@@ -85,10 +85,10 @@ class FlutterWebAuth2Options {
           customTabsPackageOrder: json['customTabsPackageOrder'],
         );
 
-  /// **Only has an effect on iOS and macOS!**
+  /// **Only has an effect on iOS, Android and macOS!**
   /// If this is `true`, an ephemeral web browser session
   /// will be used where possible (`prefersEphemeralWebBrowserSession`).
-  /// For Android devices, see [intentFlags].
+  /// For Android devices (for supporting older Chrome than 141) alternatively you can see [intentFlags].
   final bool preferEphemeral;
 
   /// **Only has an effect on Web!**
