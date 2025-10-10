@@ -2,8 +2,7 @@
 const defaultIntentFlags = 0;
 
 /// "Ephemeral" intent flags for opening the custom tabs intent on Android.
-/// This is essentially the same as
-/// FLAG_ACTIVITY_NO_HISTORY`.
+@Deprecated('Use [preferEphemeral]')
 const ephemeralIntentFlags = defaultIntentFlags | 1 << 30;
 
 /// Default HTML code that generates a nice callback page.
@@ -87,8 +86,7 @@ class FlutterWebAuth2Options {
 
   /// **Only has an effect on iOS, Android and macOS!**
   /// If this is `true`, an ephemeral web browser session
-  /// will be used where possible (`prefersEphemeralWebBrowserSession`).
-  /// For Android devices (for supporting older Chrome than 141) alternatively you can see [intentFlags].
+  /// will be used where possible.
   final bool preferEphemeral;
 
   /// **Only has an effect on Web!**
@@ -103,9 +101,6 @@ class FlutterWebAuth2Options {
   /// [here](https://developer.android.com/reference/android/content/Intent#setFlags(int))
   /// or by using the flags from the `Flag` class from
   /// [android_intent_plus](https://pub.dev/packages/android_intent_plus).
-  /// Use [ephemeralIntentFlags] if you want similar behaviour to
-  /// [preferEphemeral] on Android.
-  /// For Apple devices, see [preferEphemeral].
   final int intentFlags;
 
   /// **Only has an effect on Web!**
