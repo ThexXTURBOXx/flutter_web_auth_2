@@ -82,7 +82,7 @@ final accessToken = jsonDecode(response.body)['access_token'] as String;
 
 **Note (Google multiple scopes):** To use multiple scopes with Google, you need to encode them as a single string, separated by spaces (`%20`). For example, `scope: 'email https://www.googleapis.com/auth/userinfo.profile'`. Here is [a list of all supported scopes](https://developers.google.com/identity/protocols/oauth2/scopes).
 
-**Note (ephemeral auth):** Due to a [knownw Chrome bug](https://issuetracker.google.com/issues/444173718), when setting `preferEphemeral: true` on Android, the webview will crash on older Chrome version (minimum version required is [Chrome 141](https://developer.chrome.com/release-notes/141?hl=en)).
+**Note (ephemeral auth):** Due to a [known Chrome bug](https://issuetracker.google.com/issues/444173718), when setting `preferEphemeral: true` on Android with Chrome < 141, the package will launch an auth session with older implementation to avoid crashes.
 
 ## Migration
 
@@ -327,7 +327,7 @@ When you use this package for the first time, you may experience some problems. 
     +   android:exported="true"
     +   android:taskAffinity="">
     ```
-  
+
 - If you want to have a callback URL with `http` or `https` scheme, you also need to specify a host etc.
   See [c:geo](https://github.com/cgeo/cgeo/blob/d7ab67629ac4798adaae194e563afe7df134fcd0/main/AndroidManifest.xml#L164) as an example for this.
 - In older versions of this package, there was a known problem with task affinities and launch modes (see [#113](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/113)). In order to ensure that `flutter_web_auth_2` works correctly on these versions (prior to `5.0.0-alpha.2`), set `android:launchMode="singleTop"` and remove any `android:taskAffinity` entries. This configuration is guaranteed to work. In newer versions, this should not cause problems!
