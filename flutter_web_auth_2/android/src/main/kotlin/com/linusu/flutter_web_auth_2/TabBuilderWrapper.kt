@@ -14,8 +14,7 @@ interface TabBuilderWrapper {
 }
 
 interface IntentWrapper {
-    fun setPackage(pkg: String?)
-    fun addFlags(flags: Int)
+    val intent: Intent
     fun launch(activity: Activity, launcher: ActivityResultLauncher<Intent>, url: Uri, redirectHost: String, redirectPath: String)
     fun launch(activity: Activity, launcher: ActivityResultLauncher<Intent>, url: Uri, redirectScheme: String)
 }
@@ -27,13 +26,9 @@ class CtBuilderWrapper(private val b: CustomTabsIntent.Builder) : TabBuilderWrap
     override fun build(): IntentWrapper {
         val intent = b.build()
         return object : IntentWrapper {
-            override fun setPackage(pkg: String?) {
-                intent.intent.setPackage(pkg)
-            }
 
-            override fun addFlags(flags: Int) {
-                intent.intent.addFlags(flags)
-            }
+            override val intent: Intent
+                get() = intent.intent
 
             override fun launch(activity: Activity, launcher: ActivityResultLauncher<Intent>, url: Uri, redirectHost: String, redirectPath: String) {
                 intent.launchUrl(activity, url)
@@ -54,13 +49,9 @@ class AuthTabBuilderWrapper(private val b: AuthTabIntent.Builder) : TabBuilderWr
     override fun build(): IntentWrapper {
         val intent = b.build()
         return object : IntentWrapper {
-            override fun setPackage(pkg: String?) {
-                intent.intent.setPackage(pkg)
-            }
 
-            override fun addFlags(flags: Int) {
-                intent.intent.addFlags(flags)
-            }
+            override val intent: Intent
+                get() = intent.intent
 
             override fun launch(activity: Activity, launcher: ActivityResultLauncher<Intent>, url: Uri, redirectHost: String, redirectPath: String) {
                 intent.launch(launcher, url, redirectHost, redirectPath)

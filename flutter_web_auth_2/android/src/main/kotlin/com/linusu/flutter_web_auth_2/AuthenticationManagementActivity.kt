@@ -106,8 +106,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
             val intent = intentBuilder.build()
 
-            intent.addFlags(intentFlags)
-            intent.setPackage(targetPackage)
+            intent.intent.addFlags(intentFlags)
+            intent.intent.setPackage(targetPackage)
 
             if (callbackScheme == "https" && callbackHost != null && callbackPath != null) {
                 Log.d(LOG_TAG, "Using https host and path: $callbackHost, $callbackPath")
