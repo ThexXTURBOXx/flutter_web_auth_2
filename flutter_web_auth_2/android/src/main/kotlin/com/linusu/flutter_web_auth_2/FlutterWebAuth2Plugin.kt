@@ -3,9 +3,7 @@ package com.linusu.flutter_web_auth_2
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import androidx.browser.customtabs.CustomTabsClient
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -49,8 +47,8 @@ class FlutterWebAuth2Plugin(
                 val options = call.argument<Map<String, Any>>("options")!!
 
                 callbacks[callbackUrlScheme] = resultCallback
-                activity?.startActivity(Intent(activity,AuthenticationManagementActivity::class.java).apply {
-                    putExtra(AuthenticationManagementActivity.KEY_AUTH_URI,url)
+                activity?.startActivity(Intent(activity, AuthenticationManagementActivity::class.java).apply {
+                    putExtra(AuthenticationManagementActivity.KEY_AUTH_URI, url)
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_OPTION_INTENT_FLAGS, options["intentFlags"] as Int)
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_OPTION_TARGET_PACKAGE, findTargetBrowserPackageName(options))
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_CALLBACK_SCHEME, callbackUrlScheme)
@@ -92,66 +90,67 @@ class FlutterWebAuth2Plugin(
      * Find Support CustomTabs Browser.
      *
      * Priority:
-     * 1. Chrome
-     * 2. Custom Browser Order
-     * 3. default Browser
-     * 4. Installed Browser
+     * 1. Custom Browser Order (if supported)
+     * 2. default Browser
+     * 3. Installed Browsers (if supported)
+     * 4. Chrome (last fallback)
      */
-    private fun findTargetBrowserPackageName(options: Map<String, Any>): String? {
-        @Suppress("UNCHECKED_CAST")
-        val customTabsPackageOrder = (options["customTabsPackageOrder"] as Iterable<String>?) ?: emptyList()
-        // Check target browser
-        var targetPackage = customTabsPackageOrder.firstOrNull { isSupportCustomTabs(it) }
-        if (targetPackage != null) {
-            return targetPackage
+    private fun findTargetBrowserPackageName(options: Map<String, Any>): String {
+        val context = requireNotNull(context) { "Context is null" }
+
+        val selectedPackage = (options["customTabsPackageOrder"] as? Iterable<*>)
+            ?.mapNotNull { (it as? String)?.trim() }
+            ?.filter { it.isNotEmpty() }
+            ?.firstOrNull { isSupportCustomTabs(it) }
+
+        if (selectedPackage != null) {
+            return selectedPackage
         }
 
         // Check default browser
-        val defaultBrowserSupported = CustomTabsClient.getPackageName(context!!, emptyList<String>()) != null
-        if (defaultBrowserSupported) {
-            return null;
+        val defaultBrowserSupported = CustomTabsClient.getPackageName(context, emptyList<String>())
+        if (defaultBrowserSupported != null) {
+            return defaultBrowserSupported
         }
         // Check installed browser
-        val allBrowsers = getInstalledBrowsers()
-        targetPackage = allBrowsers.firstOrNull { isSupportCustomTabs(it) }
+        val matchedBrowser = getInstalledBrowsers().firstOrNull { isSupportCustomTabs(it) }
 
         // Safely fall back on Chrome just in case
-        val chromePackage = "com.android.chrome"
-        if (targetPackage == null && isSupportCustomTabs(chromePackage)) {
-            return chromePackage
-        }
-        return targetPackage
+        return matchedBrowser ?: PackageNames.CHROME_STABLE
     }
 
     private fun getInstalledBrowsers(): List<String> {
+        val context = requireNotNull(context) { "Context is null" }
+
         // Get all apps that can handle VIEW intents
-        val activityIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://"))
-        val packageManager = context!!.packageManager
-        val viewIntentHandlers = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            packageManager.queryIntentActivities(activityIntent, PackageManager.MATCH_ALL)
-        } else {
-            packageManager.queryIntentActivities(activityIntent, 0)
+        val activityIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://"))
+        val viewIntentHandlers = context.getPackagesForIntent(activityIntent)
+
+        val preferredKnownBrowsers = listOf(
+            PackageNames.CHROME_STABLE,
+            PackageNames.CHROME_BETA,
+            PackageNames.SAMSUNG_INTERNET,
+            PackageNames.MICROSOFT_EDGE,
+            PackageNames.FIREFOX,
+            PackageNames.CHROME_DEV,
+        )
+
+        val preferred = mutableListOf<String>()
+        val others = mutableListOf<String>()
+        val pushToEnd = mutableListOf<String>() // for the least-favorite apps
+
+        for (pkg in viewIntentHandlers) {
+            if (preferredKnownBrowsers.contains(pkg)) preferred += pkg
+            else others += pkg
         }
 
-        val allBrowser = viewIntentHandlers.map { it.activityInfo.packageName }.sortedWith(compareBy {
-            if (setOf(
-                    "com.android.chrome",
-                    "com.chrome.beta",
-                    "com.chrome.dev",
-                    "com.microsoft.emmx"
-                ).contains(it)
-            ) {
-                return@compareBy -1
-            }
+        preferred.sortBy { preferredKnownBrowsers.indexOf(it) }
 
-            // Firefox default is not enabled, must enable in the browser settings.
-            if (setOf("org.mozilla.firefox").contains(it)) {
-                return@compareBy 1
-            }
-            return@compareBy 0
-        })
-
-        return allBrowser
+        return buildList {
+            addAll(preferred)
+            addAll(others)
+            addAll(pushToEnd)
+        }
     }
 
     private fun isSupportCustomTabs(packageName: String): Boolean {
