@@ -93,6 +93,7 @@ The following constraints have been added in `5.0.0`:
 - Android now uses Auth Tab: `httpsHost` and `httpsPath` are now required on Android if you are using a `https` in `callbackUrlScheme`
 - On Android, issues with `taskAffinity`s have been fixed and it is strongly advised to set `android:taskAffinity=""` for all exported `Activity`s (this usually includes your `MainActivity` and `flutter_web_auth_2`'s `CallbackActivity`)
 - Dart SDK `>=3.5.0` is now required (due to migration to melos `7.x`)
+- If you want ephemeral authentication on Android, use `preferEphemeral` instead of `ephemeralIntentFlags` as `intentFlags` have other influences now
 
 ### Upgrading to `4.x`
 
@@ -140,7 +141,7 @@ possibilities. Even platform-specific ones! If you want to upgrade, you need to 
   - `preferEphemeral`: This has been split into the two named parameters `preferEphemeral` (for
     iOS and MacOS) and `intentFlags` (for Android) within `FlutterWebAuth2Options`. The former works
     exactly the same. However, if you want the old behaviour using `preferEphemeral` on Android, use
-    the `ephemeralIntentFlags` constant as value for `intentFlags`.
+    the `ephemeralIntentFlags` constant as value for `intentFlags`. **(THIS WAS REVERTED IN 5.x)**
 
 ### Upgrading from `flutter_web_auth`
 
