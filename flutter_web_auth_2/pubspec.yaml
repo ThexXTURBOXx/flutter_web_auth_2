@@ -1,6 +1,6 @@
 name: flutter_web_auth_2
 description: Flutter plugin for authenticating a user with a web service.
-version: 5.0.0-alpha.6
+version: 5.0.0-alpha.7
 resolution: workspace
 homepage: https://github.com/ThexXTURBOXx/flutter_web_auth_2
 repository: https://github.com/ThexXTURBOXx/flutter_web_auth_2

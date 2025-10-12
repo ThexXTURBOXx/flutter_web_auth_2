@@ -1,3 +1,8 @@
+## 5.0.0-alpha.7
+
+- 🌹 Update Android intricacies
+- 🐛 Revert to `CustomTabsIntent` when needed (Thanks to [@StevenSorial](https://github.com/StevenSorial) in [#181](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/181))
+
 ## 5.0.0-alpha.6
 
 - 🌹 Fix ephemeral web views on Android; re-introduces `preferEphemeral` on Android for more iOS/Android parity (Thanks to [@ApofisXII](https://github.com/ApofisXII) in [#180](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/180), related to [#169](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/169))
