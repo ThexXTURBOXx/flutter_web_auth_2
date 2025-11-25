@@ -3,6 +3,7 @@ package com.linusu.flutter_web_auth
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 
 import androidx.browser.customtabs.CustomTabsIntent
 
@@ -16,6 +17,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 
 class FlutterWebAuthPlugin(private var context: Context? = null, private var channel: MethodChannel? = null): MethodCallHandler, FlutterPlugin {
   companion object {
+    private const val LOG_TAG = "FlutterWebAuthPlugin"
     val callbacks = mutableMapOf<String, Result>()
 
     @JvmStatic
@@ -59,7 +61,14 @@ class FlutterWebAuthPlugin(private var context: Context? = null, private var cha
           }
           intent.intent.putExtra("android.support.customtabs.extra.KEEP_ALIVE", keepAliveIntent)
 
-          intent.launchUrl(context!!, url)
+          try {
+              intent.launchUrl(context!!, url)
+          } catch (e: android.content.ActivityNotFoundException) {
+              Log.e(LOG_TAG, "ActivityNotFoundException: No browser available", e)
+              val callback = callbacks[callbackUrlScheme]
+              callback?.error("NO_BROWSER", "No browser available on this device.", e.message)
+              callbacks.remove(callbackUrlScheme)
+          }
         }
         "cleanUpDanglingCalls" -> {
           callbacks.forEach{ (_, danglingResultCallback) ->
