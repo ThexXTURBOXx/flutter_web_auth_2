@@ -24,7 +24,7 @@ Add the following snippet to your `pubspec.yaml` and follow the [Setup guide](#s
 
 ```yaml
 dependencies:
-  flutter_web_auth_2: ^5.0.0-alpha.0
+  flutter_web_auth_2: ^5.0.0
 ```
 
 To authenticate against your own custom site:

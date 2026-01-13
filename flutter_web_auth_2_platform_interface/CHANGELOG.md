@@ -1,3 +1,7 @@
+## 5.0.0
+
+*No changes - just the official version release!*
+
 ## 5.0.0-alpha.4
 
 - 🌹 Update melos to regular `7.x` releases

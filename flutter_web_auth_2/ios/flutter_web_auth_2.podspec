@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_web_auth_2'
-  s.version          = '5.0.0-alpha.2'
+  s.version          = '5.0.0'
   s.summary          = 'Flutter plugin for authenticating a user with a web service.'
   s.description      = <<-DESC
 Flutter plugin for authenticating a user with a web service.
