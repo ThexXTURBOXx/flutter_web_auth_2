@@ -115,8 +115,8 @@ class FlutterWebAuth2Plugin(
         // Check installed browser
         val matchedBrowser = getInstalledBrowsers().firstOrNull { isSupportCustomTabs(it) }
 
-        // Don't fall back to chrome here. It is not installed anyways because it would be in matchedBrowser.
-        // Instead fall back to null so we can use the system backup (if one is available).
+        // Don't fall back to Chrome here. It is not installed anyway because it would already be in matchedBrowser.
+        // Instead, fall back to null so we can use the system backup (if one is available).
         return matchedBrowser
     }
 
