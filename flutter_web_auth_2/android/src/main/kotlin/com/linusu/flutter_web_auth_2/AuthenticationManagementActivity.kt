@@ -35,7 +35,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
     private var authStarted: Boolean = false
     private lateinit var authenticationUri: Uri
     private var intentFlags: Int = 0
-    private lateinit var targetPackage: String
+    private var targetPackage: String? = null
     private var preferEphemeral: Boolean = false
     private lateinit var callbackScheme: String
     private var callbackHost: String? = null
@@ -107,14 +107,24 @@ class AuthenticationManagementActivity : ComponentActivity() {
             val intent = intentBuilder.build()
 
             intent.intent.addFlags(intentFlags)
-            intent.intent.setPackage(targetPackage)
+            if(targetPackage != null){
+                intent.intent.setPackage(targetPackage)
+            }
 
-            if (callbackScheme == "https" && callbackHost != null && callbackPath != null) {
-                Log.d(LOG_TAG, "Using https host and path: $callbackHost, $callbackPath")
-                intent.launch(this, authLauncher, authenticationUri, callbackHost!!, callbackPath!!)
-            } else {
-                Log.d(LOG_TAG, "Using custom scheme: $callbackScheme")
-                intent.launch(this, authLauncher, authenticationUri, callbackScheme)
+            try{
+                if (callbackScheme == "https" && callbackHost != null && callbackPath != null) {
+                    Log.d(LOG_TAG, "Using https host and path: $callbackHost, $callbackPath")
+                    intent.launch(this, authLauncher, authenticationUri, callbackHost!!, callbackPath!!)
+                } else {
+                    Log.d(LOG_TAG, "Using custom scheme: $callbackScheme")
+                    intent.launch(this, authLauncher, authenticationUri, callbackScheme)
+                }
+            } catch (e: android.content.ActivityNotFoundException){
+                Log.e(LOG_TAG,"Failed to start authentication. No browser available (Activity not found)")
+                val callback = FlutterWebAuth2Plugin.callbacks[callbackScheme]
+                callback?.error("NO_BROWSER","No valid browser available for authentication.",e.message)
+                FlutterWebAuth2Plugin.callbacks.remove(callbackScheme)
+                finish()
             }
 
             authStarted = true
@@ -129,8 +139,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
     fun shouldUseLegacySystem(): Boolean {
 
-        if (!preferEphemeral) return false
-        val packageMajorVersion = getInstalledVersion(targetPackage)?.substringBefore(".")?.toIntOrNull() ?: 0
+        if (!preferEphemeral || targetPackage == null) return false
+        val packageMajorVersion = getInstalledVersion(targetPackage!!)?.substringBefore(".")?.toIntOrNull() ?: 0
         Log.d(LOG_TAG, "Chosen package: $targetPackage with version: $packageMajorVersion")
 
         val chromePackages = setOf(
@@ -180,7 +190,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
             state.getParcelable(KEY_AUTH_URI)
         } ?: throw IllegalStateException("Authentication URI is null")
         intentFlags = state.getInt(KEY_AUTH_OPTION_INTENT_FLAGS, 0)
-        targetPackage = state.getString(KEY_AUTH_OPTION_TARGET_PACKAGE)!!
+        targetPackage = state.getString(KEY_AUTH_OPTION_TARGET_PACKAGE)
         preferEphemeral = state.getBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, false)
         callbackScheme = state.getString(KEY_AUTH_CALLBACK_SCHEME)!!
         callbackHost = state.getString(KEY_AUTH_CALLBACK_HOST)
