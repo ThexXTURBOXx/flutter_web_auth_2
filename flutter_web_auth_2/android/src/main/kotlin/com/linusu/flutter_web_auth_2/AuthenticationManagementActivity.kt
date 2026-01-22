@@ -86,12 +86,12 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
         if (!authStarted) {
 
-            val intentBuilder = if (shouldUseLegacySystem()) {
-                Log.d(LOG_TAG, "Using CustomTabsIntent")
-                CtBuilderWrapper(CustomTabsIntent.Builder())
-            } else {
+            val intentBuilder = if (shouldUseAuthTabs()) {
                 Log.d(LOG_TAG, "Using AuthTabIntent")
                 AuthTabBuilderWrapper(AuthTabIntent.Builder())
+            } else {
+                Log.d(LOG_TAG, "Using CustomTabsIntent")
+                CtBuilderWrapper(CustomTabsIntent.Builder())
             }
 
             // Set ephemeral browsing if requested and supported
@@ -107,11 +107,11 @@ class AuthenticationManagementActivity : ComponentActivity() {
             val intent = intentBuilder.build()
 
             intent.intent.addFlags(intentFlags)
-            if(targetPackage != null){
+            if (targetPackage != null) {
                 intent.intent.setPackage(targetPackage)
             }
 
-            try{
+            try {
                 if (callbackScheme == "https" && callbackHost != null && callbackPath != null) {
                     Log.d(LOG_TAG, "Using https host and path: $callbackHost, $callbackPath")
                     intent.launch(this, authLauncher, authenticationUri, callbackHost!!, callbackPath!!)
@@ -120,9 +120,9 @@ class AuthenticationManagementActivity : ComponentActivity() {
                     intent.launch(this, authLauncher, authenticationUri, callbackScheme)
                 }
             } catch (e: android.content.ActivityNotFoundException){
-                Log.e(LOG_TAG,"Failed to start authentication. No browser available (Activity not found)")
+                Log.e(LOG_TAG, "Failed to start authentication. No browser available (Activity not found)")
                 val callback = FlutterWebAuth2Plugin.callbacks[callbackScheme]
-                callback?.error("NO_BROWSER","No valid browser available for authentication.",e.message)
+                callback?.error("NO_BROWSER", "No valid browser available for authentication.", e.message)
                 FlutterWebAuth2Plugin.callbacks.remove(callbackScheme)
                 finish()
             }
@@ -137,9 +137,9 @@ class AuthenticationManagementActivity : ComponentActivity() {
         finish()
     }
 
-    fun shouldUseLegacySystem(): Boolean {
+    fun shouldUseAuthTabs(): Boolean {
 
-        if (!preferEphemeral || targetPackage == null) return false
+        if (!preferEphemeral || targetPackage == null) return true
         val packageMajorVersion = getInstalledVersion(targetPackage!!)?.substringBefore(".")?.toIntOrNull() ?: 0
         Log.d(LOG_TAG, "Chosen package: $targetPackage with version: $packageMajorVersion")
 
@@ -150,16 +150,16 @@ class AuthenticationManagementActivity : ComponentActivity() {
         )
 
         if (chromePackages.contains(targetPackage)) {
-            return packageMajorVersion < 141
+            return packageMajorVersion >= 141
         } else if (targetPackage == PackageNames.MICROSOFT_EDGE) {
-            return packageMajorVersion < 141
+            return packageMajorVersion >= 141
         } else if (targetPackage == PackageNames.SAMSUNG_INTERNET) {
-            return packageMajorVersion < 28
+            return packageMajorVersion >= 28
         } else if (targetPackage == PackageNames.FIREFOX) {
-            return packageMajorVersion < 143
+            return packageMajorVersion >= 143
         }
 
-        return false
+        return true
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -167,10 +167,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         outState.putBoolean(KEY_AUTH_STARTED, authStarted)
         outState.putParcelable(KEY_AUTH_URI, authenticationUri)
         outState.putInt(KEY_AUTH_OPTION_INTENT_FLAGS, intentFlags)
-        outState.putString(
-            KEY_AUTH_OPTION_TARGET_PACKAGE,
-            targetPackage,
-        )
+        outState.putString(KEY_AUTH_OPTION_TARGET_PACKAGE, targetPackage)
         outState.putBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, preferEphemeral)
         outState.putString(KEY_AUTH_CALLBACK_SCHEME, callbackScheme)
         outState.putString(KEY_AUTH_CALLBACK_HOST, callbackHost)
