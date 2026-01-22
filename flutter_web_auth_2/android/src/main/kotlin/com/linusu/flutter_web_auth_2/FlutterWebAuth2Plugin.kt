@@ -93,9 +93,9 @@ class FlutterWebAuth2Plugin(
      * 1. Custom Browser Order (if supported)
      * 2. default Browser
      * 3. Installed Browsers (if supported)
-     * 4. Chrome (last fallback)
+     * 4. null (System backup aka. some obscure browser that may work)
      */
-    private fun findTargetBrowserPackageName(options: Map<String, Any>): String {
+    private fun findTargetBrowserPackageName(options: Map<String, Any>): String? {
         val context = requireNotNull(context) { "Context is null" }
 
         val selectedPackage = (options["customTabsPackageOrder"] as? Iterable<*>)
@@ -115,8 +115,9 @@ class FlutterWebAuth2Plugin(
         // Check installed browser
         val matchedBrowser = getInstalledBrowsers().firstOrNull { isSupportCustomTabs(it) }
 
-        // Safely fall back on Chrome just in case
-        return matchedBrowser ?: PackageNames.CHROME_STABLE
+        // Don't fall back to Chrome here. It is not installed anyway because it would already be in matchedBrowser.
+        // Instead, fall back to null so we can use the system backup (if one is available).
+        return matchedBrowser
     }
 
     private fun getInstalledBrowsers(): List<String> {
