@@ -1,3 +1,7 @@
+## 5.0.1
+
+- 🐛 Fix crash on Android and implement proper feedback if no browser is installed (Thanks to [@Mino5531](https://github.com/Mino5531) in [#190](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/190))
+
 ## 5.0.0
 
 *No changes - just the official version release!*
