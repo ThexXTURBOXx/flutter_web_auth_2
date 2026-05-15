@@ -1,3 +1,9 @@
+## 6.0.0-alpha.0
+
+- 💥 Bump Flutter and Dart SDK constraints to `3.44.0` and `3.12.0` betas, respectively
+- 💥 Regenerate entire project skeleton (also migrates to built-in Kotlin)
+- 💥 Rename `cleanUpDanglingCalls` -> `clearAllDanglingCalls` (unification)
+
 ## 5.0.0
 
 *No changes - just the official version release!*
