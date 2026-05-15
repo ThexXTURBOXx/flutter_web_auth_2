@@ -32,7 +32,7 @@ class FlutterWebAuth2 {
       FlutterWebAuth2Platform.instance;
 
   static final _OnAppLifecycleResumeObserver _resumedObserver =
-      _OnAppLifecycleResumeObserver(_cleanUpDanglingCalls);
+      _OnAppLifecycleResumeObserver(_clearAllDanglingCalls);
 
   static void _assertCallbackScheme(String callbackUrlScheme) {
     if ((PlatformIs.web || (!PlatformIs.windows && !PlatformIs.linux)) &&
@@ -89,7 +89,7 @@ class FlutterWebAuth2 {
   /// the result back to the caller of `authenticate`. But if that result never
   /// comes the callback will dangle around forever. This can be called to
   /// terminate all `authenticate` calls with an error.
-  static Future<void> _cleanUpDanglingCalls() async {
+  static Future<void> _clearAllDanglingCalls() async {
     await _platform.clearAllDanglingCalls();
     WidgetsBinding.instance.removeObserver(_resumedObserver);
   }

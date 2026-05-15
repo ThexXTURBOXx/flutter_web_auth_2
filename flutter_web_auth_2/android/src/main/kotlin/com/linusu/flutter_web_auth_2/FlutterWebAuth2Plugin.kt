@@ -58,7 +58,7 @@ class FlutterWebAuth2Plugin(
                 })
             }
 
-            "cleanUpDanglingCalls" -> {
+            "clearAllDanglingCalls" -> {
                 callbacks.forEach { (_, danglingResultCallback) ->
                     danglingResultCallback.error("CANCELED", "User canceled login", null)
                 }

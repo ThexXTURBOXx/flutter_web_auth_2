@@ -69,7 +69,7 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, ASWebAuthentication
 
             session.start()
             sessionToKeepAlive = session
-        } else if call.method == "cleanUpDanglingCalls" {
+        } else if call.method == "clearAllDanglingCalls" {
             // we do not keep track of old callbacks on macOS, so nothing to do here
             result(nil)
         } else {

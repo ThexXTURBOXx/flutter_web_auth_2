@@ -33,7 +33,7 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
           callbackUrlScheme: '',
           options: call.arguments['options'],
         );
-      case 'cleanUpDanglingCalls':
+      case 'clearAllDanglingCalls':
         return clearAllDanglingCalls();
       default:
         throw PlatformException(
