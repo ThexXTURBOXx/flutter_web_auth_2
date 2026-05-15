@@ -61,28 +61,28 @@ class FlutterWebAuth2Options {
     this.httpsHost,
     this.httpsPath,
     this.customTabsPackageOrder,
-  })  : preferEphemeral = preferEphemeral ?? false,
-        intentFlags = intentFlags ?? defaultIntentFlags,
-        timeout = timeout ?? 5 * 60,
-        landingPageHtml = landingPageHtml ?? _defaultLandingPage,
-        silentAuth = silentAuth ?? false,
-        useWebview = useWebview ?? true;
+  }) : preferEphemeral = preferEphemeral ?? false,
+       intentFlags = intentFlags ?? defaultIntentFlags,
+       timeout = timeout ?? 5 * 60,
+       landingPageHtml = landingPageHtml ?? _defaultLandingPage,
+       silentAuth = silentAuth ?? false,
+       useWebview = useWebview ?? true;
 
   /// Construct an instance from JSON format.
   FlutterWebAuth2Options.fromJson(Map<String, dynamic> json)
-      : this(
-          preferEphemeral: json['preferEphemeral'],
-          debugOrigin: json['debugOrigin'],
-          intentFlags: json['intentFlags'],
-          windowName: json['windowName'],
-          timeout: json['timeout'],
-          landingPageHtml: json['landingPageHtml'],
-          silentAuth: json['silentAuth'],
-          useWebview: json['useWebview'],
-          httpsHost: json['httpsHost'],
-          httpsPath: json['httpsPath'],
-          customTabsPackageOrder: json['customTabsPackageOrder'],
-        );
+    : this(
+        preferEphemeral: json['preferEphemeral'],
+        debugOrigin: json['debugOrigin'],
+        intentFlags: json['intentFlags'],
+        windowName: json['windowName'],
+        timeout: json['timeout'],
+        landingPageHtml: json['landingPageHtml'],
+        silentAuth: json['silentAuth'],
+        useWebview: json['useWebview'],
+        httpsHost: json['httpsHost'],
+        httpsPath: json['httpsPath'],
+        customTabsPackageOrder: json['customTabsPackageOrder'],
+      );
 
   /// **Only has an effect on iOS, Android and macOS!**
   /// If this is `true`, an ephemeral web browser session
@@ -168,16 +168,16 @@ class FlutterWebAuth2Options {
 
   /// Convert this instance to JSON format.
   Map<String, dynamic> toJson() => {
-        'preferEphemeral': preferEphemeral,
-        'debugOrigin': debugOrigin,
-        'intentFlags': intentFlags,
-        'windowName': windowName,
-        'timeout': timeout,
-        'landingPageHtml': landingPageHtml,
-        'silentAuth': silentAuth,
-        'useWebview': useWebview,
-        'customTabsPackageOrder': customTabsPackageOrder,
-        'httpsHost': httpsHost,
-        'httpsPath': httpsPath,
-      };
+    'preferEphemeral': preferEphemeral,
+    'debugOrigin': debugOrigin,
+    'intentFlags': intentFlags,
+    'windowName': windowName,
+    'timeout': timeout,
+    'landingPageHtml': landingPageHtml,
+    'silentAuth': silentAuth,
+    'useWebview': useWebview,
+    'customTabsPackageOrder': customTabsPackageOrder,
+    'httpsHost': httpsHost,
+    'httpsPath': httpsPath,
+  };
 }

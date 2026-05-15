@@ -58,20 +58,18 @@ class FlutterWebAuth2WebViewPlugin extends FlutterWebAuth2Platform {
       c.complete(url);
     });
     unawaited(
-      _webview!.onClose.whenComplete(
-        () {
-          /**
+      _webview!.onClose.whenComplete(() {
+        /**
            * Not setting the webview to null will cause a crash if the
            * application tries to open another webview
            */
-          _webview = null;
-          if (!_authenticated) {
-            c.completeError(
-              PlatformException(code: 'CANCELED', message: 'User canceled'),
-            );
-          }
-        },
-      ),
+        _webview = null;
+        if (!_authenticated) {
+          c.completeError(
+            PlatformException(code: 'CANCELED', message: 'User canceled'),
+          );
+        }
+      }),
     );
     _webview!.launch(url);
     return c.future;

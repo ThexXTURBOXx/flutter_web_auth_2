@@ -38,7 +38,8 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
       default:
         throw PlatformException(
           code: 'Unimplemented',
-          details: "The flutter_web_auth_2 plugin for web doesn't implement "
+          details:
+              "The flutter_web_auth_2 plugin for web doesn't implement "
               "the method '${call.method}'",
         );
     }
@@ -67,8 +68,9 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
         if (messageEvent.origin ==
             (parsedOptions.debugOrigin ?? Uri.base.origin)) {
           final data = messageEvent.data.dartify();
-          final authMessage =
-              data != null && data is Map ? data['flutter-web-auth-2'] : null;
+          final authMessage = data != null && data is Map
+              ? data['flutter-web-auth-2']
+              : null;
           if (authMessage is String) {
             authIframe.remove();
             completer.complete(authMessage);
@@ -79,17 +81,19 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
       });
 
       // Add a timeout for the iframe response
-      responseTimeoutTimer =
-          Timer(Duration(seconds: parsedOptions.timeout), () {
-        authIframe.remove();
-        messageSubscription?.cancel();
-        completer.completeError(
-          PlatformException(
-            code: 'timeout',
-            message: 'Timeout waiting for the iframe response',
-          ),
-        );
-      });
+      responseTimeoutTimer = Timer(
+        Duration(seconds: parsedOptions.timeout),
+        () {
+          authIframe.remove();
+          messageSubscription?.cancel();
+          completer.completeError(
+            PlatformException(
+              code: 'timeout',
+              message: 'Timeout waiting for the iframe response',
+            ),
+          );
+        },
+      );
 
       return completer.future;
     }
@@ -134,8 +138,9 @@ class FlutterWebAuth2WebPlugin extends FlutterWebAuth2Platform {
           if (messageEvent.origin ==
               (parsedOptions.debugOrigin ?? Uri.base.origin)) {
             final data = messageEvent.data.dartify();
-            final flutterWebAuthMessage =
-                data != null && data is Map ? data['flutter-web-auth-2'] : null;
+            final flutterWebAuthMessage = data != null && data is Map
+                ? data['flutter-web-auth-2']
+                : null;
             if (flutterWebAuthMessage is String) {
               lsTimer?.cancel();
               messageSubscription?.cancel();
