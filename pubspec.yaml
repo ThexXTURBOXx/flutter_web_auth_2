@@ -3,7 +3,7 @@ name: flutter_web_auth_2_root
 publish_to: none
 
 environment:
-  sdk: '>=3.6.0 <4.0.0'
+  sdk: ^3.12.0-327.4.beta
 
 workspace:
   - flutter_web_auth_2
