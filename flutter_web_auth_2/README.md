@@ -183,17 +183,34 @@ In order to capture the callback url, the following `activity` needs to be added
 
 If you are using `http` or `https` as your callback scheme, you also need to specify a host etc.
 See [c:geo](https://github.com/cgeo/cgeo/blob/d7ab67629ac4798adaae194e563afe7df134fcd0/main/AndroidManifest.xml#L164) as an example for this.
+To learn more about setting up Android App Links, see [Flutter's guide](https://docs.flutter.dev/cookbook/navigation/set-up-app-links).
 
-### iOS
+### iOS / macOS (Apple platforms)
 
-For "normal" authentication, just use this library as usual; there is nothing special to do!
+For custom callback schemes (for example `myapp://callback`), just use this library as usual.
 
-To authenticate using [Universal Links](https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html)
-on iOS, use `https` as the provided `callbackUrlScheme`:
+If you use `https` as `callbackUrlScheme` (Universal Links), additional Apple platform setup is required:
+
+1. Configure **Associated Domains** in your app entitlements.
+2. Add your domain using the `webcredentials` service type (for example: `webcredentials:example.com`).
+3. Host a valid `apple-app-site-association` (AASA) file for that domain, with your app identifier.
+4. Pass `httpsHost` and `httpsPath` in `FlutterWebAuth2Options`.
+
+Example:
 
 ```dart
-final result = await FlutterWebAuth2.authenticate(url: "https://my-custom-app.com/connect", callbackUrlScheme: "https");
+final result = await FlutterWebAuth2.authenticate(
+  url: "https://my-custom-app.com/connect",
+  callbackUrlScheme: "https",
+  options: const FlutterWebAuth2Options(
+    httpsHost: "my-custom-app.com",
+    httpsPath: "/oauth",
+  ),
+);
 ```
+
+If this setup is incomplete, Apple can reject the auth callback and you'll receive a `PlatformException` from native code. Check `PlatformException.details` (`domain`, `code`, `description`) for the exact reason.
+To learn more about setting up Universal Links, see [Flutter's guide](https://docs.flutter.dev/cookbook/navigation/set-up-universal-links).
 
 ### Web
 
@@ -342,6 +359,38 @@ When you use this package for the first time, you may experience some problems. 
 
     header("Location: validscheme://?data1=value1&data2=value2");
     ```
+
+### Troubleshooting Native Errors (iOS/macOS)
+
+On iOS and macOS, native authentication failures are forwarded as `PlatformException` values.
+Besides `code` and `message`, the `details` map contains:
+- `domain`
+- `code`
+- `description`
+
+This is especially useful for `https` callback issues on Apple platforms (for example, Associated Domains / `webcredentials` setup problems).
+
+```dart
+import 'package:flutter/services.dart';
+
+try {
+  final result = await FlutterWebAuth2.authenticate(
+    url: authUrl,
+    callbackUrlScheme: 'https',
+    options: const FlutterWebAuth2Options(
+      httpsHost: 'example.com',
+      httpsPath: '/oauth',
+    ),
+  );
+  // use result
+} on PlatformException catch (e) {
+  final details = e.details is Map ? e.details as Map : const {};
+  final nativeDomain = details['domain'];
+  final nativeCode = details['code'];
+  final nativeDescription = details['description'];
+  // Log or show the native diagnostics here.
+}
+```
 
 ### Troubleshooting HTML redirects
 
