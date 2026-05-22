@@ -3,6 +3,7 @@
 - 💥 Bump Flutter and Dart SDK constraints to `3.44.0` and `3.12.0` betas, respectively
 - 💥 Regenerate entire project skeleton (also migrates to built-in Kotlin)
 - 💥 Rename `cleanUpDanglingCalls` -> `clearAllDanglingCalls` (unification)
+- 🍎 Migrate iOS plugin to UIScene lifecycle (fixes [#192](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/192))
 
 ## 5.0.2
 
