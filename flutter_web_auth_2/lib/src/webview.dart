@@ -39,14 +39,14 @@ class FlutterWebAuth2WebViewPlugin extends FlutterWebAuth2Platform {
         userDataFolderWindows: (await getTemporaryDirectory()).path,
       ),
     );
-    _webview!.addOnUrlRequestCallback((url) {
+    _webview!.setOnUrlRequestCallback((url) {
       final uri = Uri.parse(url);
       if (uri.scheme != callbackUrlScheme ||
           (parsedOptions.httpsHost != null &&
               uri.host != parsedOptions.httpsHost) ||
           (parsedOptions.httpsPath != null &&
               uri.path != parsedOptions.httpsPath)) {
-        return;
+        return true;
       }
       _authenticated = true;
       _webview?.close();
@@ -56,6 +56,7 @@ class FlutterWebAuth2WebViewPlugin extends FlutterWebAuth2Platform {
        */
       _webview = null;
       c.complete(url);
+      return false;
     });
     unawaited(
       _webview!.onClose.whenComplete(() {
