@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:flutter_web_auth_2_platform_interface/flutter_web_auth_2_platform_interface.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:window_to_front/window_to_front.dart';
+import 'package:flutter_web_auth_2/src/window_to_front.dart';
 
 /// Implements the plugin interface using an internal server (currently used by
 /// Windows and Linux).

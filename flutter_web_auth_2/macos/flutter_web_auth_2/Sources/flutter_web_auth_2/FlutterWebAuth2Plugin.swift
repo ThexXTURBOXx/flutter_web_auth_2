@@ -1,4 +1,5 @@
 import AuthenticationServices
+import Cocoa
 import SafariServices
 import FlutterMacOS
 
@@ -69,6 +70,9 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, ASWebAuthentication
 
             session.start()
             sessionToKeepAlive = session
+        } else if call.method == "activate" {
+            NSApplication.shared.activate(ignoringOtherApps: true)
+            result(nil)
         } else if call.method == "clearAllDanglingCalls" {
             // we do not keep track of old callbacks on macOS, so nothing to do here
             result(nil)

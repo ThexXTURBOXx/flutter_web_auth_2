@@ -25,7 +25,7 @@ environment:
   flutter: '>=3.44.0-0.3.pre'
 
 dependencies:
-  desktop_webview_window: ^0.2.3
+  desktop_webview_window: ^0.3.0
   flutter:
     sdk: flutter
   flutter_web_auth_2_platform_interface: ^6.0.0-alpha.0
@@ -34,7 +34,6 @@ dependencies:
   path_provider: ^2.1.2
   url_launcher: ^6.1.6
   web: ">=0.5.0 <2.0.0"
-  window_to_front: ^0.0.3
 
 dev_dependencies:
   flutter_lints: ^6.0.0
@@ -50,6 +49,7 @@ flutter:
       ios:
         pluginClass: FlutterWebAuth2Plugin
       linux:
+        pluginClass: FlutterWebAuth2Plugin
         dartPluginClass: FlutterWebAuth2LinowsPlugin
         fileName: src/linows.dart
       macos:
@@ -58,5 +58,6 @@ flutter:
         pluginClass: FlutterWebAuth2WebPlugin
         fileName: src/web.dart
       windows:
+        pluginClass: FlutterWebAuth2Plugin
         dartPluginClass: FlutterWebAuth2LinowsPlugin
         fileName: src/linows.dart
