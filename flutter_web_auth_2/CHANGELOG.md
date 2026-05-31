@@ -1,3 +1,7 @@
+## 5.0.3
+
+- 🌹 Bump `desktop_webview_window` to `0.3.0`
+
 ## 5.0.2
 
 - 🐛 Fix possible NPE on Android (Thanks to [@henry11996](https://github.com/henry11996) in [#196](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/196))
