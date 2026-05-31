@@ -25,7 +25,7 @@ environment:
   flutter: ">=3.24.0"
 
 dependencies:
-  desktop_webview_window: ^0.2.3
+  desktop_webview_window: ^0.3.0
   flutter:
     sdk: flutter
   flutter_web_auth_2_platform_interface: ^5.0.0

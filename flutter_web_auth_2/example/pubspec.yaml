@@ -15,7 +15,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.3
-  desktop_webview_window: ^0.2.3
+  desktop_webview_window: ^0.3.0
   flutter:
     sdk: flutter
   flutter_web_auth_2: ^5.0.0
