@@ -1,3 +1,7 @@
+## 6.0.0-alpha.1
+
+- 🌹 Bump `desktop_webview_window` to `0.3.0`
+
 ## 6.0.0-alpha.0
 
 - 💥 Bump Flutter and Dart SDK constraints to `3.44.0` and `3.12.0` betas, respectively
