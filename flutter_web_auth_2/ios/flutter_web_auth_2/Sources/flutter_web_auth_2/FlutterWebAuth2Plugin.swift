@@ -171,11 +171,10 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin {
         }
     }
 
-    private static func errorDetails(from err: Error) -> [String: Any] {
-        let nsError = err as NSError
+    private static func errorDetails(from err: NSError) -> [String: Any] {
         return [
-            "domain": nsError.domain,
-            "code": nsError.code,
+            "domain": err.domain,
+            "code": err.code,
             "description": err.localizedDescription
         ]
     }
