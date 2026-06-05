@@ -1,3 +1,9 @@
+## 6.0.0-alpha.2
+
+- 💥 Bump Flutter and Dart SDK constraints to `3.44.0` and `3.12.0` stable, respectively
+- 🌹 Enhancement: provide detailed error information in FlutterError responses for iOS and macOS (Thanks to [@Abhishek-Khanal](https://github.com/Abhishek-Khanal) in [#200](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/200))
+- 🌹 Migrate iOS plugin to UIScene lifecycle (Thanks to [@alihamza0173](https://github.com/alihamza0173) in [#201](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/201))
+
 ## 6.0.0-alpha.1
 
 - 🌹 Bump `desktop_webview_window` to `0.3.0`
