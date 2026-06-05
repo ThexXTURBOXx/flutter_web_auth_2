@@ -24,11 +24,23 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, ASWebAuthentication
 
                 if let err = err {
                     if case ASWebAuthenticationSessionError.canceledLogin = err {
-                        result(FlutterError(code: "CANCELED", message: "User canceled login", details: nil))
+                        result(
+                            FlutterError(
+                                code: "CANCELED",
+                                message: "User canceled login",
+                                details: Self.errorDetails(from: err)
+                            )
+                        )
                         return
                     }
 
-                    result(FlutterError(code: "EUNKNOWN", message: err.localizedDescription, details: nil))
+                    result(
+                        FlutterError(
+                            code: "EUNKNOWN",
+                            message: err.localizedDescription,
+                            details: Self.errorDetails(from: err)
+                        )
+                    )
                     return
                 }
 
@@ -77,6 +89,14 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, ASWebAuthentication
         }
     }
 
+    private static func errorDetails(from err: NSError) -> [String: Any] {
+        return [
+            "domain": err.domain,
+            "code": err.code,
+            "description": err.localizedDescription
+        ]
+    }
+
     @available(macOS 10.15, *)
     public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return NSApplication.shared.windows.first { $0.isKeyWindow } ?? ASPresentationAnchor()
@@ -85,10 +105,22 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, ASWebAuthentication
 
 fileprivate extension FlutterError {
     static var invalidHttpsHostError: FlutterError {
-        return FlutterError(code: "INVALID_HTTPS_HOST_ERROR", message: "Failed to retrieve host for https scheme", details: nil)
+        return FlutterError(
+            code: "INVALID_HTTPS_HOST_ERROR",
+            message: "Failed to retrieve host for https scheme",
+            details: [
+                "description": "When callbackUrlScheme is https, options.httpsHost must be provided."
+            ]
+        )
     }
 
     static var invalidHttpsPathError: FlutterError {
-        return FlutterError(code: "INVALID_HTTPS_PATH_ERROR", message: "Failed to retrieve path for https scheme", details: nil)
+        return FlutterError(
+            code: "INVALID_HTTPS_PATH_ERROR",
+            message: "Failed to retrieve path for https scheme",
+            details: [
+                "description": "When callbackUrlScheme is https, options.httpsPath must be provided."
+            ]
+        )
     }
 }

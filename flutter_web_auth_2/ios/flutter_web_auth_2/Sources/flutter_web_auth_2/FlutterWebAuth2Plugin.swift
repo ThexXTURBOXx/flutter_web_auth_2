@@ -48,11 +48,7 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, FlutterSceneLifeCyc
                                 FlutterError(
                                     code: "CANCELED",
                                     message: "User canceled login",
-                                    details: [
-                                        "domain": (err as NSError).domain,
-                                        "code": (err as NSError).code,
-                                        "description": err.localizedDescription
-                                   ]
+                                    details: Self.errorDetails(from: err)
                                )
                             )
                             return
@@ -65,18 +61,20 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, FlutterSceneLifeCyc
                                 FlutterError(
                                     code: "CANCELED",
                                     message: "User canceled login",
-                                    details: [
-                                        "domain": (err as NSError).domain,
-                                        "code": (err as NSError).code,
-                                        "description": err.localizedDescription
-                                   ]
+                                    details: Self.errorDetails(from: err)
                                 )
                             )
                             return
                         }
                     }
 
-                    result(FlutterError(code: "EUNKNOWN", message: err.localizedDescription, details: nil))
+                    result(
+                        FlutterError(
+                            code: "EUNKNOWN",
+                            message: err.localizedDescription,
+                            details: Self.errorDetails(from: err)
+                        )
+                    )
                     return
                 }
 
@@ -196,6 +194,14 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, FlutterSceneLifeCyc
         }
         return keyWindow?.rootViewController
     }
+
+    private static func errorDetails(from err: NSError) -> [String: Any] {
+        return [
+            "domain": err.domain,
+            "code": err.code,
+            "description": err.localizedDescription
+        ]
+    }
 }
 
 @available(iOS 13, *)
@@ -211,10 +217,22 @@ fileprivate extension FlutterError {
     }
 
     static var invalidHttpsHostError: FlutterError {
-        return FlutterError(code: "INVALID_HTTPS_HOST_ERROR", message: "Failed to retrieve host for https scheme", details: nil)
+        return FlutterError(
+            code: "INVALID_HTTPS_HOST_ERROR",
+            message: "Failed to retrieve host for https scheme",
+            details: [
+                "description": "When callbackUrlScheme is https, options.httpsHost must be provided."
+            ]
+        )
     }
 
     static var invalidHttpsPathError: FlutterError {
-        return FlutterError(code: "INVALID_HTTPS_PATH_ERROR", message: "Failed to retrieve path for https scheme", details: nil)
+        return FlutterError(
+            code: "INVALID_HTTPS_PATH_ERROR",
+            message: "Failed to retrieve path for https scheme",
+            details: [
+                "description": "When callbackUrlScheme is https, options.httpsPath must be provided."
+            ]
+        )
     }
 }
