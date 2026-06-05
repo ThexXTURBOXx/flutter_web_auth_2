@@ -195,11 +195,12 @@ public class FlutterWebAuth2Plugin: NSObject, FlutterPlugin, FlutterSceneLifeCyc
         return keyWindow?.rootViewController
     }
 
-    private static func errorDetails(from err: NSError) -> [String: Any] {
+    private static func errorDetails(from err: Error) -> [String: Any] {
+        let nsError = err as NSError
         return [
-            "domain": err.domain,
-            "code": err.code,
-            "description": err.localizedDescription
+            "domain": nsError.domain,
+            "code": nsError.code,
+            "description": nsError.localizedDescription
         ]
     }
 }
