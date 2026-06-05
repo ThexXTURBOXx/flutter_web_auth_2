@@ -1,3 +1,7 @@
+## 6.0.0-alpha.3
+
+- 🐛 Refactor error handling to use Swift `Error` type for improved compatibility (Thanks to [@Abhishek-Khanal](https://github.com/Abhishek-Khanal) in [#204](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/204))
+
 ## 6.0.0-alpha.2
 
 - 💥 Bump Flutter and Dart SDK constraints to `3.44.0` and `3.12.0` stable, respectively
