@@ -1,3 +1,8 @@
+## 6.0.0-alpha.4
+
+- 💥 Drop support for `web` versions `0.x`
+- 🌹 Bump `window_to_front` to `0.1.0`
+
 ## 6.0.0-alpha.3
 
 - 🐛 Refactor error handling to use Swift `Error` type for improved compatibility (Thanks to [@Abhishek-Khanal](https://github.com/Abhishek-Khanal) in [#204](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/204))
