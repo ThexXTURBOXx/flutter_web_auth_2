@@ -1,3 +1,8 @@
+## 6.0.0-alpha.5
+
+- 🌹 Allow `window_to_front` versions `1.x`
+- 🌹 Bump `melos` to `8.x`
+
 ## 6.0.0-alpha.4
 
 - 💥 Drop support for `web` versions `0.x`
