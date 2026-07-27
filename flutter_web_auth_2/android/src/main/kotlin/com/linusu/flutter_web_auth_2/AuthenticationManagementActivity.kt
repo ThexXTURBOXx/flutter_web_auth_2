@@ -130,6 +130,16 @@ class AuthenticationManagementActivity : ComponentActivity() {
                 callback?.error("NO_BROWSER", "No valid browser available for authentication.", e.message)
                 FlutterWebAuth2Plugin.callbacks.remove(callbackScheme)
                 finish()
+            } catch (e: SecurityException) {
+                // Some apps register themselves as browsers but do not export their
+                // intent-handling activity; launching the tab then throws instead of
+                // ActivityNotFoundException. Fail the attempt like the no-browser case
+                // rather than crashing the host app.
+                Log.e(LOG_TAG, "Failed to start authentication. Default browser activity is not exported (SecurityException)")
+                val callback = FlutterWebAuth2Plugin.callbacks[callbackScheme]
+                callback?.error("NO_BROWSER", "No valid browser available for authentication.", e.message)
+                FlutterWebAuth2Plugin.callbacks.remove(callbackScheme)
+                finish()
             }
 
             authStarted = true
