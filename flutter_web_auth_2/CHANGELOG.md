@@ -1,3 +1,7 @@
+## 6.0.0-alpha.6
+
+- 🐛 Catch `SecurityException` when launching the auth tab (Thanks to [@hokeroid](https://github.com/hokeroid) in [#212](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/212), related to [#211](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/211))
+
 ## 6.0.0-alpha.5
 
 - 🌹 Allow `window_to_front` versions `1.x`
