@@ -21,6 +21,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         const val KEY_AUTH_OPTION_INTENT_FLAGS: String = "authOptionsIntentFlags"
         const val KEY_AUTH_OPTION_TARGET_PACKAGE: String = "authOptionsTargetPackage"
         const val KEY_AUTH_OPTION_PREFER_EPHEMERAL: String = "authOptionsPreferEphemeral"
+        const val KEY_AUTH_OPTION_FORCE_CUSTOM_TABS: String = "authOptionsForceCustomTabs"
         const val KEY_AUTH_CALLBACK_SCHEME: String = "authCallbackScheme"
         const val KEY_AUTH_CALLBACK_HOST: String = "authCallbackHost"
         const val KEY_AUTH_CALLBACK_PATH: String = "authCallbackPath"
@@ -37,6 +38,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
     private var intentFlags: Int = 0
     private var targetPackage: String? = null
     private var preferEphemeral: Boolean = false
+    private var forceCustomTabs: Boolean = false
     private lateinit var callbackScheme: String
     private var callbackHost: String? = null
     private var callbackPath: String? = null
@@ -54,6 +56,13 @@ class AuthenticationManagementActivity : ComponentActivity() {
         } else {
             extractState(savedInstanceState)
         }
+    }
+
+
+    private fun finishWithoutAnimation() {
+        finish()
+        @Suppress("DEPRECATION")
+        overridePendingTransition(0, 0)
     }
 
     private fun handleAuthResult(result: AuthResult) {
@@ -86,11 +95,14 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
         if (!authStarted) {
 
-            val intentBuilder = if (shouldUseAuthTabs()) {
+
+            val useAuthTabs = !forceCustomTabs && shouldUseAuthTabs()
+
+            val intentBuilder = if (useAuthTabs) {
                 Log.d(LOG_TAG, "Using AuthTabIntent")
                 AuthTabBuilderWrapper(AuthTabIntent.Builder())
             } else {
-                Log.d(LOG_TAG, "Using CustomTabsIntent")
+                Log.d(LOG_TAG, "Using CustomTabsIntent" + if (forceCustomTabs) " (forced)" else "")
                 CtBuilderWrapper(CustomTabsIntent.Builder())
             }
 
@@ -169,6 +181,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         outState.putInt(KEY_AUTH_OPTION_INTENT_FLAGS, intentFlags)
         outState.putString(KEY_AUTH_OPTION_TARGET_PACKAGE, targetPackage)
         outState.putBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, preferEphemeral)
+        outState.putBoolean(KEY_AUTH_OPTION_FORCE_CUSTOM_TABS, forceCustomTabs)
         outState.putString(KEY_AUTH_CALLBACK_SCHEME, callbackScheme)
         outState.putString(KEY_AUTH_CALLBACK_HOST, callbackHost)
         outState.putString(KEY_AUTH_CALLBACK_PATH, callbackPath)
@@ -189,6 +202,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         intentFlags = state.getInt(KEY_AUTH_OPTION_INTENT_FLAGS, 0)
         targetPackage = state.getString(KEY_AUTH_OPTION_TARGET_PACKAGE)
         preferEphemeral = state.getBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, false)
+        forceCustomTabs = state.getBoolean(KEY_AUTH_OPTION_FORCE_CUSTOM_TABS, false)
         callbackScheme = state.getString(KEY_AUTH_CALLBACK_SCHEME)!!
         callbackHost = state.getString(KEY_AUTH_CALLBACK_HOST)
         callbackPath = state.getString(KEY_AUTH_CALLBACK_PATH)

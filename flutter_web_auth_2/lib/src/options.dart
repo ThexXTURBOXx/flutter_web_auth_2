@@ -61,12 +61,14 @@ class FlutterWebAuth2Options {
     this.httpsHost,
     this.httpsPath,
     this.customTabsPackageOrder,
+    bool? forceCustomTabs,
   })  : preferEphemeral = preferEphemeral ?? false,
         intentFlags = intentFlags ?? defaultIntentFlags,
         timeout = timeout ?? 5 * 60,
         landingPageHtml = landingPageHtml ?? _defaultLandingPage,
         silentAuth = silentAuth ?? false,
-        useWebview = useWebview ?? true;
+        useWebview = useWebview ?? true,
+        forceCustomTabs = forceCustomTabs ?? false;
 
   /// Construct an instance from JSON format.
   FlutterWebAuth2Options.fromJson(Map<String, dynamic> json)
@@ -82,6 +84,7 @@ class FlutterWebAuth2Options {
           httpsHost: json['httpsHost'],
           httpsPath: json['httpsPath'],
           customTabsPackageOrder: json['customTabsPackageOrder'],
+          forceCustomTabs: json['forceCustomTabs'],
         );
 
   /// **Only has an effect on iOS, Android and macOS!**
@@ -166,6 +169,7 @@ class FlutterWebAuth2Options {
   /// is tested etc.
   final List<String>? customTabsPackageOrder;
 
+  final bool forceCustomTabs;
   /// Convert this instance to JSON format.
   Map<String, dynamic> toJson() => {
         'preferEphemeral': preferEphemeral,
@@ -179,5 +183,6 @@ class FlutterWebAuth2Options {
         'customTabsPackageOrder': customTabsPackageOrder,
         'httpsHost': httpsHost,
         'httpsPath': httpsPath,
+        'forceCustomTabs': forceCustomTabs,
       };
 }
