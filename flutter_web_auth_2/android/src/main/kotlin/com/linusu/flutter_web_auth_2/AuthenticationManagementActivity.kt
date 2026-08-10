@@ -59,12 +59,6 @@ class AuthenticationManagementActivity : ComponentActivity() {
     }
 
 
-    private fun finishWithoutAnimation() {
-        finish()
-        @Suppress("DEPRECATION")
-        overridePendingTransition(0, 0)
-    }
-
     private fun handleAuthResult(result: AuthResult) {
         val callback = FlutterWebAuth2Plugin.callbacks[callbackScheme]
         if (callback == null) {
