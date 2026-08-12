@@ -153,6 +153,10 @@ If you are using versions `>= 3.0.0`, you also need to follow the migration guid
 
 If you are still unsure or something is not working as well as before, please [open a new issue](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/new/choose).
 
+### Built-in KGP/AGP 9+ support
+
+If you need to use built-in Kotlin Gradle plugin or Android Gradle Plugin 9+, use versions `6.x`.
+
 ## Setup
 
 Setup is the same as for any Flutter plugin, with the following caveats:
