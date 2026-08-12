@@ -211,11 +211,11 @@ class AuthenticationManagementActivity : ComponentActivity() {
             Log.e(
                 LOG_TAG,
                 "Unable to restore authentication state (missing authUri and/or " +
-                    "callbackScheme), likely due to process death. Finishing gracefully."
+                    "callbackScheme), likely due to process death. Finishing gracefully"
             )
             if (scheme != null) {
                 FlutterWebAuth2Plugin.callbacks[scheme]?.error(
-                    "FAILED",
+                    "CANNOT_RESTORE",
                     "Authentication session was lost, likely because the app was killed in the background. Please try again.",
                     null
                 )
