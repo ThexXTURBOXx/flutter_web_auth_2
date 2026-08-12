@@ -1,3 +1,8 @@
+## 5.1.0
+
+- 🐛 Catch `SecurityException` when launching the auth tab (Thanks to [@hokeroid](https://github.com/hokeroid) in [#212](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/212), related to [#211](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/211))
+- 🐛 Handle missing `authUri`/`callbackScheme` gracefully (Thanks to [@md-shohan-ahmed](https://github.com/md-shohan-ahmed) in [#209](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/209), related to [#207](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/207))
+
 ## 6.0.0-alpha.6
 
 - 🐛 Catch `SecurityException` when launching the auth tab (Thanks to [@hokeroid](https://github.com/hokeroid) in [#212](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/212), related to [#211](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/211))
@@ -23,6 +28,10 @@
 - 🌹 Migrate iOS plugin to UIScene lifecycle (Thanks to [@alihamza0173](https://github.com/alihamza0173) in [#201](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/201))
 
 ## 6.0.0-alpha.1
+
+- 🌹 Bump `desktop_webview_window` to `0.3.0`
+
+## 5.0.3
 
 - 🌹 Bump `desktop_webview_window` to `0.3.0`
 
