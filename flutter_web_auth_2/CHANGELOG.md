@@ -1,7 +1,3 @@
-## Unreleased
-
-- 🐛 Fix `AuthenticationManagementActivity` crash (`IllegalStateException: Authentication URI is null`) when the activity is recreated from an incomplete saved state after the app's process was killed during external browser authentication ([#207](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/207))
-
 ## 6.0.0-alpha.5
 
 - 🌹 Allow `window_to_front` versions `1.x`
