@@ -1,6 +1,44 @@
+## 6.0.0-alpha.7
+
+- 🐛 Handle missing `authUri`/`callbackScheme` gracefully (Thanks to [@md-shohan-ahmed](https://github.com/md-shohan-ahmed) in [#209](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/209), related to [#207](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/207))
+
+## 6.0.0-alpha.6
+
+- 🐛 Catch `SecurityException` when launching the auth tab (Thanks to [@hokeroid](https://github.com/hokeroid) in [#212](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/212), related to [#211](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/211))
+
+## 6.0.0-alpha.5
+
+- 🌹 Allow `window_to_front` versions `1.x`
+- 🌹 Bump `melos` to `8.x`
+
+## 6.0.0-alpha.4
+
+- 💥 Drop support for `web` versions `0.x`
+- 🌹 Bump `window_to_front` to `0.1.0`
+
+## 6.0.0-alpha.3
+
+- 🐛 Refactor error handling to use Swift `Error` type for improved compatibility (Thanks to [@Abhishek-Khanal](https://github.com/Abhishek-Khanal) in [#204](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/204))
+
+## 6.0.0-alpha.2
+
+- 💥 Bump Flutter and Dart SDK constraints to `3.44.0` and `3.12.0` stable, respectively
+- 🌹 Enhancement: provide detailed error information in FlutterError responses for iOS and macOS (Thanks to [@Abhishek-Khanal](https://github.com/Abhishek-Khanal) in [#200](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/200))
+- 🌹 Migrate iOS plugin to UIScene lifecycle (Thanks to [@alihamza0173](https://github.com/alihamza0173) in [#201](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/201))
+
+## 6.0.0-alpha.1
+
+- 🌹 Bump `desktop_webview_window` to `0.3.0`
+
 ## 5.0.3
 
 - 🌹 Bump `desktop_webview_window` to `0.3.0`
+
+## 6.0.0-alpha.0
+
+- 💥 Bump Flutter and Dart SDK constraints to `3.44.0` and `3.12.0` betas, respectively
+- 💥 Regenerate entire project skeleton (also migrates to built-in Kotlin)
+- 💥 Rename `cleanUpDanglingCalls` -> `clearAllDanglingCalls` (unification)
 
 ## 5.0.2
 
