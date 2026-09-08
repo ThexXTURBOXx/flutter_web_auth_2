@@ -11,6 +11,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.browser.auth.AuthTabIntent
 import androidx.browser.auth.AuthTabIntent.AuthResult
+import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 
 @SuppressLint("UnsafeOptInUsageError", "UnsafeOptInUsageWarning")
@@ -21,6 +22,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         const val KEY_AUTH_OPTION_INTENT_FLAGS: String = "authOptionsIntentFlags"
         const val KEY_AUTH_OPTION_TARGET_PACKAGE: String = "authOptionsTargetPackage"
         const val KEY_AUTH_OPTION_PREFER_EPHEMERAL: String = "authOptionsPreferEphemeral"
+        const val KEY_AUTH_OPTION_PREFER_AUTH_TABS: String = "authOptionsPreferAuthTabs"
         const val KEY_AUTH_CALLBACK_SCHEME: String = "authCallbackScheme"
         const val KEY_AUTH_CALLBACK_HOST: String = "authCallbackHost"
         const val KEY_AUTH_CALLBACK_PATH: String = "authCallbackPath"
@@ -38,6 +40,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
     private var intentFlags: Int = 0
     private var targetPackage: String? = null
     private var preferEphemeral: Boolean = false
+    private var preferAuthTabs: Boolean = true
     private lateinit var callbackScheme: String
     private var callbackHost: String? = null
     private var callbackPath: String? = null
@@ -76,6 +79,18 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
             AuthTabIntent.RESULT_CANCELED -> {
                 callback.error("CANCELED", "User canceled authentication", null)
+            }
+
+            AuthTabIntent.RESULT_VERIFICATION_FAILED -> {
+                callback.error("AUTH_TAB_VERIFICATION_FAILED", "Auth Tab redirect verification failed", null)
+            }
+
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> {
+                callback.error("AUTH_TAB_VERIFICATION_TIMED_OUT", "Auth Tab redirect verification timed out", null)
+            }
+
+            AuthTabIntent.RESULT_UNKNOWN_CODE -> {
+                callback.error("AUTH_TAB_FAILED", "Auth Tab returned an unknown result", null)
             }
 
             else -> {
@@ -162,10 +177,19 @@ class AuthenticationManagementActivity : ComponentActivity() {
     }
 
     fun shouldUseAuthTabs(): Boolean {
+        if (!preferAuthTabs) {
+            Log.d(LOG_TAG, "Auth Tabs disabled by caller; using CustomTabsIntent")
+            return false
+        }
+        val provider = targetPackage ?: return false
+        if (!CustomTabsClient.isAuthTabSupported(this, provider)) {
+            Log.d(LOG_TAG, "Auth Tabs unsupported by $provider; using CustomTabsIntent")
+            return false
+        }
 
-        if (!preferEphemeral || targetPackage == null) return true
-        val packageMajorVersion = getInstalledVersion(targetPackage!!)?.substringBefore(".")?.toIntOrNull() ?: 0
-        Log.d(LOG_TAG, "Chosen package: $targetPackage with version: $packageMajorVersion")
+        if (!preferEphemeral) return true
+        val packageMajorVersion = getInstalledVersion(provider)?.substringBefore(".")?.toIntOrNull() ?: 0
+        Log.d(LOG_TAG, "Chosen package: $provider with version: $packageMajorVersion")
 
         val chromePackages = setOf(
             PackageNames.CHROME_STABLE,
@@ -173,13 +197,13 @@ class AuthenticationManagementActivity : ComponentActivity() {
             PackageNames.CHROME_DEV,
         )
 
-        if (chromePackages.contains(targetPackage)) {
+        if (chromePackages.contains(provider)) {
             return packageMajorVersion >= 141
-        } else if (targetPackage == PackageNames.MICROSOFT_EDGE) {
+        } else if (provider == PackageNames.MICROSOFT_EDGE) {
             return packageMajorVersion >= 141
-        } else if (targetPackage == PackageNames.SAMSUNG_INTERNET) {
+        } else if (provider == PackageNames.SAMSUNG_INTERNET) {
             return packageMajorVersion >= 28
-        } else if (targetPackage == PackageNames.FIREFOX) {
+        } else if (provider == PackageNames.FIREFOX) {
             return packageMajorVersion >= 143
         }
 
@@ -193,6 +217,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         outState.putInt(KEY_AUTH_OPTION_INTENT_FLAGS, intentFlags)
         outState.putString(KEY_AUTH_OPTION_TARGET_PACKAGE, targetPackage)
         outState.putBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, preferEphemeral)
+        outState.putBoolean(KEY_AUTH_OPTION_PREFER_AUTH_TABS, preferAuthTabs)
         outState.putString(KEY_AUTH_CALLBACK_SCHEME, callbackScheme)
         outState.putString(KEY_AUTH_CALLBACK_HOST, callbackHost)
         outState.putString(KEY_AUTH_CALLBACK_PATH, callbackPath)
@@ -240,6 +265,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         intentFlags = state.getInt(KEY_AUTH_OPTION_INTENT_FLAGS, 0)
         targetPackage = state.getString(KEY_AUTH_OPTION_TARGET_PACKAGE)
         preferEphemeral = state.getBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, false)
+        preferAuthTabs = state.getBoolean(KEY_AUTH_OPTION_PREFER_AUTH_TABS, true)
         callbackScheme = scheme
         callbackHost = state.getString(KEY_AUTH_CALLBACK_HOST)
         callbackPath = state.getString(KEY_AUTH_CALLBACK_PATH)
