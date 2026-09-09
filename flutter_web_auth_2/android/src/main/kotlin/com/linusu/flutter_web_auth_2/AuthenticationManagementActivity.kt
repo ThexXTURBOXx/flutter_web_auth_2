@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -25,6 +26,14 @@ class AuthenticationManagementActivity : ComponentActivity() {
         const val KEY_AUTH_CALLBACK_HOST: String = "authCallbackHost"
         const val KEY_AUTH_CALLBACK_PATH: String = "authCallbackPath"
 
+        const val KEY_AUTH_FALLBACK_STARTED: String = "authFallbackStarted"
+        const val KEY_AUTH_LAUNCHED_AT: String = "authLaunchedAt"
+
+        // A RESULT_CANCELED this soon after launch cannot be a person closing
+        // the tab (the browser has barely rendered); it is the Auth Tab
+        // aborting on its own, so it takes the Custom Tab fallback below.
+        private const val AUTH_TAB_FAST_CANCEL_MS: Long = 1000
+
         fun createResponseHandlingIntent(context: Context): Intent {
             val intent = Intent(context, AuthenticationManagementActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -41,6 +50,11 @@ class AuthenticationManagementActivity : ComponentActivity() {
     private lateinit var callbackScheme: String
     private var callbackHost: String? = null
     private var callbackPath: String? = null
+
+    // True once the Auth Tab refused the flow and the retry through a plain
+    // Custom Tab has been scheduled.
+    private var fallbackStarted: Boolean = false
+    private var launchedAt: Long = 0
 
     private lateinit var authLauncher: ActivityResultLauncher<Intent>
 
@@ -61,6 +75,37 @@ class AuthenticationManagementActivity : ComponentActivity() {
         val callback = FlutterWebAuth2Plugin.callbacks[callbackScheme]
         if (callback == null) {
             finish()
+            return
+        }
+
+        // On some devices Chrome's Auth Tab refuses to run the flow — its
+        // browser-side Digital Asset Links verification of the calling app
+        // fails or times out and the tab closes right after opening. Retry once through a plain Custom Tab:
+        // that flow returns via the app-link CallbackActivity and does not
+        // depend on the browser-side verification. An instant RESULT_CANCELED
+        // is the same refusal in disguise (a person cannot open and close the
+        // tab within AUTH_TAB_FAST_CANCEL_MS), so it takes the same retry.
+        val authTabRefused = when (result.resultCode) {
+            AuthTabIntent.RESULT_VERIFICATION_FAILED,
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT,
+            AuthTabIntent.RESULT_UNKNOWN_CODE -> true
+
+            AuthTabIntent.RESULT_CANCELED ->
+                SystemClock.elapsedRealtime() - launchedAt < AUTH_TAB_FAST_CANCEL_MS
+
+            else -> false
+        }
+        if (authTabRefused && !fallbackStarted) {
+            Log.w(
+                LOG_TAG,
+                "Auth Tab returned code ${result.resultCode} " +
+                    "${SystemClock.elapsedRealtime() - launchedAt}ms after launch; " +
+                    "retrying with a plain Custom Tab"
+            )
+            fallbackStarted = true
+            // The imminent onResume relaunches, this time through
+            // CustomTabsIntent (see the intentBuilder choice there).
+            authStarted = false
             return
         }
 
@@ -100,7 +145,9 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
         if (!authStarted) {
 
-            val intentBuilder = if (shouldUseAuthTabs()) {
+            // Never pick the Auth Tab again after it refused the flow once
+            // (see handleAuthResult).
+            val intentBuilder = if (!fallbackStarted && shouldUseAuthTabs()) {
                 Log.d(LOG_TAG, "Using AuthTabIntent")
                 AuthTabBuilderWrapper(AuthTabIntent.Builder())
             } else {
@@ -124,6 +171,9 @@ class AuthenticationManagementActivity : ComponentActivity() {
             if (targetPackage != null) {
                 intent.intent.setPackage(targetPackage)
             }
+
+            // Timestamp for the instant-cancel detection in handleAuthResult.
+            launchedAt = SystemClock.elapsedRealtime()
 
             try {
                 if (callbackScheme == "https" && callbackHost != null && callbackPath != null) {
@@ -196,6 +246,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
         outState.putString(KEY_AUTH_CALLBACK_SCHEME, callbackScheme)
         outState.putString(KEY_AUTH_CALLBACK_HOST, callbackHost)
         outState.putString(KEY_AUTH_CALLBACK_PATH, callbackPath)
+        outState.putBoolean(KEY_AUTH_FALLBACK_STARTED, fallbackStarted)
+        outState.putLong(KEY_AUTH_LAUNCHED_AT, launchedAt)
     }
 
     private fun extractState(state: Bundle?) {
@@ -243,6 +295,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
         callbackScheme = scheme
         callbackHost = state.getString(KEY_AUTH_CALLBACK_HOST)
         callbackPath = state.getString(KEY_AUTH_CALLBACK_PATH)
+        fallbackStarted = state.getBoolean(KEY_AUTH_FALLBACK_STARTED, false)
+        launchedAt = state.getLong(KEY_AUTH_LAUNCHED_AT, 0)
         hasValidState = true
     }
 }
