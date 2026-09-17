@@ -6,11 +6,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.browser.auth.AuthTabIntent
 import androidx.browser.auth.AuthTabIntent.AuthResult
+import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 
 @SuppressLint("UnsafeOptInUsageError", "UnsafeOptInUsageWarning")
@@ -21,9 +23,14 @@ class AuthenticationManagementActivity : ComponentActivity() {
         const val KEY_AUTH_OPTION_INTENT_FLAGS: String = "authOptionsIntentFlags"
         const val KEY_AUTH_OPTION_TARGET_PACKAGE: String = "authOptionsTargetPackage"
         const val KEY_AUTH_OPTION_PREFER_EPHEMERAL: String = "authOptionsPreferEphemeral"
+        const val KEY_AUTH_OPTION_PREFER_AUTH_TABS: String = "authOptionsPreferAuthTabs"
         const val KEY_AUTH_CALLBACK_SCHEME: String = "authCallbackScheme"
         const val KEY_AUTH_CALLBACK_HOST: String = "authCallbackHost"
         const val KEY_AUTH_CALLBACK_PATH: String = "authCallbackPath"
+        const val KEY_AUTH_FALLBACK_STARTED: String = "authFallbackStarted"
+        const val KEY_AUTH_LAUNCHED_AT: String = "authLaunchedAt"
+
+        private const val AUTH_TAB_FAST_CANCEL_MS: Long = 1000
 
         fun createResponseHandlingIntent(context: Context): Intent {
             val intent = Intent(context, AuthenticationManagementActivity::class.java)
@@ -38,9 +45,12 @@ class AuthenticationManagementActivity : ComponentActivity() {
     private var intentFlags: Int = 0
     private var targetPackage: String? = null
     private var preferEphemeral: Boolean = false
+    private var preferAuthTabs: Boolean = true
     private lateinit var callbackScheme: String
     private var callbackHost: String? = null
     private var callbackPath: String? = null
+    private var fallbackStarted: Boolean = false
+    private var launchedAt: Long = 0
 
     private lateinit var authLauncher: ActivityResultLauncher<Intent>
 
@@ -64,6 +74,29 @@ class AuthenticationManagementActivity : ComponentActivity() {
             return
         }
 
+        val elapsedSinceLaunch = SystemClock.elapsedRealtime() - launchedAt
+        val authTabRefused = when (result.resultCode) {
+            AuthTabIntent.RESULT_VERIFICATION_FAILED,
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT,
+            AuthTabIntent.RESULT_UNKNOWN_CODE -> true
+
+            // Some Auth Tab implementations report verification failures as
+            // an immediate cancellation instead of a dedicated result code.
+            AuthTabIntent.RESULT_CANCELED -> elapsedSinceLaunch < AUTH_TAB_FAST_CANCEL_MS
+
+            else -> false
+        }
+        if (authTabRefused && !fallbackStarted) {
+            Log.w(
+                LOG_TAG,
+                "Auth Tab returned code ${result.resultCode} " +
+                    "${elapsedSinceLaunch}ms after launch; retrying with a regular Custom Tab"
+            )
+            fallbackStarted = true
+            authStarted = false
+            return
+        }
+
         when (result.resultCode) {
             AuthTabIntent.RESULT_OK -> {
                 val uri = result.resultUri
@@ -76,6 +109,18 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
             AuthTabIntent.RESULT_CANCELED -> {
                 callback.error("CANCELED", "User canceled authentication", null)
+            }
+
+            AuthTabIntent.RESULT_VERIFICATION_FAILED -> {
+                callback.error("AUTH_TAB_VERIFICATION_FAILED", "Auth Tab redirect verification failed", null)
+            }
+
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT -> {
+                callback.error("AUTH_TAB_VERIFICATION_TIMED_OUT", "Auth Tab redirect verification timed out", null)
+            }
+
+            AuthTabIntent.RESULT_UNKNOWN_CODE -> {
+                callback.error("AUTH_TAB_FAILED", "Auth Tab returned an unknown result", null)
             }
 
             else -> {
@@ -100,7 +145,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
         if (!authStarted) {
 
-            val intentBuilder = if (shouldUseAuthTabs()) {
+            val useAuthTabs = !fallbackStarted && shouldUseAuthTabs()
+            val intentBuilder = if (useAuthTabs) {
                 Log.d(LOG_TAG, "Using AuthTabIntent")
                 AuthTabBuilderWrapper(AuthTabIntent.Builder())
             } else {
@@ -123,6 +169,10 @@ class AuthenticationManagementActivity : ComponentActivity() {
             intent.intent.addFlags(intentFlags)
             if (targetPackage != null) {
                 intent.intent.setPackage(targetPackage)
+            }
+
+            if (useAuthTabs) {
+                launchedAt = SystemClock.elapsedRealtime()
             }
 
             try {
@@ -162,10 +212,19 @@ class AuthenticationManagementActivity : ComponentActivity() {
     }
 
     fun shouldUseAuthTabs(): Boolean {
+        if (!preferAuthTabs) {
+            Log.d(LOG_TAG, "Auth Tabs disabled by caller; using CustomTabsIntent")
+            return false
+        }
+        val provider = targetPackage ?: return false
+        if (!CustomTabsClient.isAuthTabSupported(this, provider)) {
+            Log.d(LOG_TAG, "Auth Tabs unsupported by $provider; using CustomTabsIntent")
+            return false
+        }
 
-        if (!preferEphemeral || targetPackage == null) return true
-        val packageMajorVersion = getInstalledVersion(targetPackage!!)?.substringBefore(".")?.toIntOrNull() ?: 0
-        Log.d(LOG_TAG, "Chosen package: $targetPackage with version: $packageMajorVersion")
+        if (!preferEphemeral) return true
+        val packageMajorVersion = getInstalledVersion(provider)?.substringBefore(".")?.toIntOrNull() ?: 0
+        Log.d(LOG_TAG, "Chosen package: $provider with version: $packageMajorVersion")
 
         val chromePackages = setOf(
             PackageNames.CHROME_STABLE,
@@ -173,13 +232,13 @@ class AuthenticationManagementActivity : ComponentActivity() {
             PackageNames.CHROME_DEV,
         )
 
-        if (chromePackages.contains(targetPackage)) {
+        if (chromePackages.contains(provider)) {
             return packageMajorVersion >= 141
-        } else if (targetPackage == PackageNames.MICROSOFT_EDGE) {
+        } else if (provider == PackageNames.MICROSOFT_EDGE) {
             return packageMajorVersion >= 141
-        } else if (targetPackage == PackageNames.SAMSUNG_INTERNET) {
+        } else if (provider == PackageNames.SAMSUNG_INTERNET) {
             return packageMajorVersion >= 28
-        } else if (targetPackage == PackageNames.FIREFOX) {
+        } else if (provider == PackageNames.FIREFOX) {
             return packageMajorVersion >= 143
         }
 
@@ -193,9 +252,12 @@ class AuthenticationManagementActivity : ComponentActivity() {
         outState.putInt(KEY_AUTH_OPTION_INTENT_FLAGS, intentFlags)
         outState.putString(KEY_AUTH_OPTION_TARGET_PACKAGE, targetPackage)
         outState.putBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, preferEphemeral)
+        outState.putBoolean(KEY_AUTH_OPTION_PREFER_AUTH_TABS, preferAuthTabs)
         outState.putString(KEY_AUTH_CALLBACK_SCHEME, callbackScheme)
         outState.putString(KEY_AUTH_CALLBACK_HOST, callbackHost)
         outState.putString(KEY_AUTH_CALLBACK_PATH, callbackPath)
+        outState.putBoolean(KEY_AUTH_FALLBACK_STARTED, fallbackStarted)
+        outState.putLong(KEY_AUTH_LAUNCHED_AT, launchedAt)
     }
 
     private fun extractState(state: Bundle?) {
@@ -240,9 +302,12 @@ class AuthenticationManagementActivity : ComponentActivity() {
         intentFlags = state.getInt(KEY_AUTH_OPTION_INTENT_FLAGS, 0)
         targetPackage = state.getString(KEY_AUTH_OPTION_TARGET_PACKAGE)
         preferEphemeral = state.getBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, false)
+        preferAuthTabs = state.getBoolean(KEY_AUTH_OPTION_PREFER_AUTH_TABS, true)
         callbackScheme = scheme
         callbackHost = state.getString(KEY_AUTH_CALLBACK_HOST)
         callbackPath = state.getString(KEY_AUTH_CALLBACK_PATH)
+        fallbackStarted = state.getBoolean(KEY_AUTH_FALLBACK_STARTED, false)
+        launchedAt = state.getLong(KEY_AUTH_LAUNCHED_AT, 0)
         hasValidState = true
     }
 }
