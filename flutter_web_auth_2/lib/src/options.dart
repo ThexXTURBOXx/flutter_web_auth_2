@@ -171,7 +171,9 @@ class FlutterWebAuth2Options {
 
   /// **Only has an effect on Android!**
   /// If this is `true`, an Auth Tab is used when the selected browser supports
-  /// it. Otherwise, or when set to `false`, a regular Custom Tab is used.
+  /// it. If the Auth Tab refuses the flow, authentication is retried once with
+  /// a regular Custom Tab. When set to `false`, a regular Custom Tab is always
+  /// used.
   final bool preferAuthTabs;
 
   /// Convert this instance to JSON format.

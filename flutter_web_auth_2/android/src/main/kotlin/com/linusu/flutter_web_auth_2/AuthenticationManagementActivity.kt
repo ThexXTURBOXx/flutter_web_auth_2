@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -26,6 +27,10 @@ class AuthenticationManagementActivity : ComponentActivity() {
         const val KEY_AUTH_CALLBACK_SCHEME: String = "authCallbackScheme"
         const val KEY_AUTH_CALLBACK_HOST: String = "authCallbackHost"
         const val KEY_AUTH_CALLBACK_PATH: String = "authCallbackPath"
+        const val KEY_AUTH_FALLBACK_STARTED: String = "authFallbackStarted"
+        const val KEY_AUTH_LAUNCHED_AT: String = "authLaunchedAt"
+
+        private const val AUTH_TAB_FAST_CANCEL_MS: Long = 1000
 
         fun createResponseHandlingIntent(context: Context): Intent {
             val intent = Intent(context, AuthenticationManagementActivity::class.java)
@@ -44,6 +49,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
     private lateinit var callbackScheme: String
     private var callbackHost: String? = null
     private var callbackPath: String? = null
+    private var fallbackStarted: Boolean = false
+    private var launchedAt: Long = 0
 
     private lateinit var authLauncher: ActivityResultLauncher<Intent>
 
@@ -64,6 +71,29 @@ class AuthenticationManagementActivity : ComponentActivity() {
         val callback = FlutterWebAuth2Plugin.callbacks[callbackScheme]
         if (callback == null) {
             finish()
+            return
+        }
+
+        val elapsedSinceLaunch = SystemClock.elapsedRealtime() - launchedAt
+        val authTabRefused = when (result.resultCode) {
+            AuthTabIntent.RESULT_VERIFICATION_FAILED,
+            AuthTabIntent.RESULT_VERIFICATION_TIMED_OUT,
+            AuthTabIntent.RESULT_UNKNOWN_CODE -> true
+
+            // Some Auth Tab implementations report verification failures as
+            // an immediate cancellation instead of a dedicated result code.
+            AuthTabIntent.RESULT_CANCELED -> elapsedSinceLaunch < AUTH_TAB_FAST_CANCEL_MS
+
+            else -> false
+        }
+        if (authTabRefused && !fallbackStarted) {
+            Log.w(
+                LOG_TAG,
+                "Auth Tab returned code ${result.resultCode} " +
+                    "${elapsedSinceLaunch}ms after launch; retrying with a regular Custom Tab"
+            )
+            fallbackStarted = true
+            authStarted = false
             return
         }
 
@@ -115,7 +145,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
         if (!authStarted) {
 
-            val intentBuilder = if (shouldUseAuthTabs()) {
+            val useAuthTabs = !fallbackStarted && shouldUseAuthTabs()
+            val intentBuilder = if (useAuthTabs) {
                 Log.d(LOG_TAG, "Using AuthTabIntent")
                 AuthTabBuilderWrapper(AuthTabIntent.Builder())
             } else {
@@ -138,6 +169,10 @@ class AuthenticationManagementActivity : ComponentActivity() {
             intent.intent.addFlags(intentFlags)
             if (targetPackage != null) {
                 intent.intent.setPackage(targetPackage)
+            }
+
+            if (useAuthTabs) {
+                launchedAt = SystemClock.elapsedRealtime()
             }
 
             try {
@@ -221,6 +256,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
         outState.putString(KEY_AUTH_CALLBACK_SCHEME, callbackScheme)
         outState.putString(KEY_AUTH_CALLBACK_HOST, callbackHost)
         outState.putString(KEY_AUTH_CALLBACK_PATH, callbackPath)
+        outState.putBoolean(KEY_AUTH_FALLBACK_STARTED, fallbackStarted)
+        outState.putLong(KEY_AUTH_LAUNCHED_AT, launchedAt)
     }
 
     private fun extractState(state: Bundle?) {
@@ -269,6 +306,8 @@ class AuthenticationManagementActivity : ComponentActivity() {
         callbackScheme = scheme
         callbackHost = state.getString(KEY_AUTH_CALLBACK_HOST)
         callbackPath = state.getString(KEY_AUTH_CALLBACK_PATH)
+        fallbackStarted = state.getBoolean(KEY_AUTH_FALLBACK_STARTED, false)
+        launchedAt = state.getLong(KEY_AUTH_LAUNCHED_AT, 0)
         hasValidState = true
     }
 }
