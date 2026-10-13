@@ -84,6 +84,8 @@ final accessToken = jsonDecode(response.body)['access_token'] as String;
 
 **Note (ephemeral auth):** Due to a [known Chrome bug](https://issuetracker.google.com/issues/444173718), when setting `preferEphemeral: true` on Android with Chrome < 141, the package will launch an auth session with older implementation to avoid crashes.
 
+**Note (Android Auth Tabs):** The package uses an Auth Tab when the selected browser reports support. If the Auth Tab refuses the flow because redirect verification fails or times out, the package retries once with a regular Custom Tab. Set `preferAuthTabs: false` in `FlutterWebAuth2Options` to always use a regular Custom Tab.
+
 ## Migration
 
 ### Upgrading to `5.x`
