@@ -1,3 +1,8 @@
+## Unreleased
+
+- 🐛 Android: Use Auth Tabs only when the selected browser reports support, retry refused Auth Tab flows once with a regular Custom Tab, and add `preferAuthTabs` to `FlutterWebAuth2Options` to always use a regular Custom Tab
+- 🐛 Android: Close the Custom Tab after the redirect when `CallbackActivity` is started in a separate task (e.g. with `android:taskAffinity=""`)
+
 ## 6.0.0-alpha.10
 
 - 💥 Move the Linux and Windows webview into `flutter_web_auth_2_desktop_webview`, so an app that authenticates in the browser links neither WebKitGTK nor WebView2. `useWebview: true` now throws unless that package is added (Thanks to [@dariyooo](https://github.com/dariyooo) in [#222](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/222), related to [#221](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/221))

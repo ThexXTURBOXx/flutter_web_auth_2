@@ -32,6 +32,9 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
         private const val AUTH_TAB_FAST_CANCEL_MS: Long = 1000
 
+        @Volatile
+        var authTaskId: Int = -1
+
         fun createResponseHandlingIntent(context: Context): Intent {
             val intent = Intent(context, AuthenticationManagementActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -174,6 +177,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
             if (useAuthTabs) {
                 launchedAt = SystemClock.elapsedRealtime()
             }
+            authTaskId = taskId
 
             try {
                 if (callbackScheme == "https" && callbackHost != null && callbackPath != null) {
