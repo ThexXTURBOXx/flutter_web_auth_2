@@ -1,6 +1,10 @@
 ## 6.0.0-alpha.8
 
 - 💥 Migrate to `material_ui` package
+- 💥 Move the Linux and Windows webview into `flutter_web_auth_2_desktop_webview`,
+  so an app that authenticates in the browser links neither WebKitGTK nor
+  WebView2. `useWebview: true` now throws unless that package is added
+  (related to [#221](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/221))
 
 ## 6.0.0-alpha.7
 
