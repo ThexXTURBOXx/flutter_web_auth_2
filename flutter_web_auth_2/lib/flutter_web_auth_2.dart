@@ -6,6 +6,7 @@ import 'package:flutter_web_auth_2/src/platform/platform_is.dart';
 import 'package:flutter_web_auth_2_platform_interface/flutter_web_auth_2_platform_interface.dart';
 import 'package:material_ui/material_ui.dart';
 
+export 'src/desktop_webview.dart';
 export 'src/options.dart';
 export 'src/unsupported.dart'
     if (dart.library.io) 'src/linows.dart'

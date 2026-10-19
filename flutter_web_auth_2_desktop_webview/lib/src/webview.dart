@@ -35,8 +35,9 @@ class FlutterWebAuth2WebViewPlugin extends FlutterWebAuth2Platform {
         windowHeight: 720,
         windowWidth: 1280,
         title: 'Authenticate',
-        titleBarTopPadding: 0,
-        userDataFolderWindows: (await getTemporaryDirectory()).path,
+        windows: WindowsWebviewOptions(
+          userDataFolder: (await getTemporaryDirectory()).path,
+        ),
       ),
     );
     _webview!.setOnUrlRequestCallback((url) {
@@ -61,9 +62,9 @@ class FlutterWebAuth2WebViewPlugin extends FlutterWebAuth2Platform {
     unawaited(
       _webview!.onClose.whenComplete(() {
         /**
-           * Not setting the webview to null will cause a crash if the
-           * application tries to open another webview
-           */
+         * Not setting the webview to null will cause a crash if the
+         * application tries to open another webview
+         */
         _webview = null;
         if (!_authenticated) {
           c.completeError(
