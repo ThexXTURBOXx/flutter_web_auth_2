@@ -25,14 +25,12 @@ environment:
   flutter: '>=3.44.0'
 
 dependencies:
-  desktop_webview_window: ^0.3.0
   flutter:
     sdk: flutter
   flutter_web_auth_2_platform_interface: ^6.0.0-alpha.0
   flutter_web_plugins:
     sdk: flutter
   material_ui: ^1.1.1
-  path_provider: ^2.1.2
   url_launcher: ^6.1.6
   web: ^1.0.0
   window_to_front: '>=0.1.0 <2.0.0'
