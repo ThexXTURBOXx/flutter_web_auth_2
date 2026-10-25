@@ -1,3 +1,8 @@
+## 6.0.0-alpha.9
+
+- 💥 Bump Flutter and Dart SDK constraints to `3.47.0` and `3.13.0` stable, respectively
+- 💥 Update `desktop_webview_window` to `0.4.0`
+
 ## 6.0.0-alpha.8
 
 - 💥 Migrate to `material_ui` package
