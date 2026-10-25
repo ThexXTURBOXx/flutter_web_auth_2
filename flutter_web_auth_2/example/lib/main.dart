@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io' show HttpServer;
 
-import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
@@ -65,9 +64,6 @@ const _html = '''
 ''';
 
 void main(List<String> args) {
-  if (runWebViewTitleBarWidget(args)) {
-    return;
-  }
   runApp(const MyApp());
 }
 
