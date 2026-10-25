@@ -1,8 +1,10 @@
 package com.linusu.flutter_web_auth_2
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 
 class CallbackActivity : Activity() {
@@ -16,9 +18,31 @@ class CallbackActivity : Activity() {
         if (scheme != null) {
             FlutterWebAuth2Plugin.callbacks.remove(scheme)?.success(url.toString())
         }
-        startActivity(AuthenticationManagementActivity.createResponseHandlingIntent(this))
+        returnToAuthTask(AuthenticationManagementActivity.createResponseHandlingIntent(this))
         finish()
     }
+
+    private fun returnToAuthTask(intent: Intent) {
+        val authTaskId = AuthenticationManagementActivity.authTaskId
+        if (authTaskId != -1 && authTaskId != taskId) {
+            val authTask = getSystemService(ActivityManager::class.java)?.appTasks?.firstOrNull {
+                it.taskId() == authTaskId
+            }
+            if (authTask != null) {
+                authTask.startActivity(this, intent, null)
+                return
+            }
+        }
+        startActivity(intent)
+    }
+
+    private fun ActivityManager.AppTask.taskId(): Int =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            taskInfo.taskId
+        } else {
+            @Suppress("deprecation")
+            taskInfo.persistentId
+        }
 
 
     /** Fix sometimes android:autoVerify="true" cannot works when it can't access Google after installation.

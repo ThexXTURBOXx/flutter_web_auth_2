@@ -1,3 +1,8 @@
+## Unreleased
+
+- 🐛 Android: Use Auth Tabs only when the selected browser reports support, retry refused Auth Tab flows once with a regular Custom Tab, and add `preferAuthTabs` to `FlutterWebAuth2Options` to always use a regular Custom Tab
+- 🐛 Android: Close the Custom Tab after the redirect when `CallbackActivity` is started in a separate task (e.g. with `android:taskAffinity=""`)
+
 ## 6.0.0-alpha.8
 
 - 💥 Migrate to `material_ui` package
