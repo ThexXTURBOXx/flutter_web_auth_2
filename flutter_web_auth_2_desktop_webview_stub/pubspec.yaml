@@ -1,0 +1,6 @@
+name: flutter_web_auth_2_desktop_webview
+description: Replaces flutter_web_auth_2_desktop_webview so that no webview is linked.
+publish_to: none
+
+environment:
+  sdk: ^3.13.0

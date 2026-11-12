@@ -7,4 +7,5 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    - flutter_web_auth_2_desktop_webview_stub/**
 include: package:flutter_lints/flutter.yaml

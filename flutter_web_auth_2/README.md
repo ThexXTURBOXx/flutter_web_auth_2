@@ -257,6 +257,21 @@ When specifying `useWebview: true` (which is the default behaviour), you need to
 Also be aware that your users might need to install a Webview API (which is preinstalled on Windows 11 and some Windows 10 and Linux installations).
 For details, see also desktop_webview_window's guide above.
 
+#### Without the webview
+
+If you only use `useWebview: false`, you can avoid linking WebKitGTK on Linux and WebView2 on Windows by replacing the webview package with a stub:
+
+```yaml
+dependency_overrides:
+  flutter_web_auth_2_desktop_webview:
+    git:
+      url: https://github.com/ThexXTURBOXx/flutter_web_auth_2
+      ref: <flutter_web_auth_2 version>
+      path: flutter_web_auth_2_desktop_webview_stub
+```
+
+Explicitly using the stub together with `useWebview: true` throws a `StateError` on Windows and Linux. You cannot use the webview approach without the required dependencies.
+
 ## Troubleshooting
 
 When you use this package for the first time, you may experience some problems. These are some of the most common solutions:

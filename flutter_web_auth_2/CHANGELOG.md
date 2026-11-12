@@ -1,3 +1,7 @@
+## 6.0.0-alpha.10
+
+- 💥 Move the Linux and Windows webview into `flutter_web_auth_2_desktop_webview`, so an app that authenticates in the browser links neither WebKitGTK nor WebView2. `useWebview: true` now throws unless that package is added (Thanks to [@dariyooo](https://github.com/dariyooo) in [#222](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/222), related to [#221](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/221))
+
 ## 6.0.0-alpha.9
 
 - 💥 Bump Flutter and Dart SDK constraints to `3.47.0` and `3.13.0` stable, respectively
