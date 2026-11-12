@@ -10,5 +10,5 @@ it.
 
 If you only use `useWebview: false`, you can replace this package with a stub so
 that no webview is linked. See
-[Without the webview](https://github.com/ThexXTURBOXx/flutter_web_auth_2/tree/master/flutter_web_auth_2#without-the-webview)
+[Without the webview](https://pub.dev/packages/flutter_web_auth_2#without-the-webview)
 in the `flutter_web_auth_2` README.

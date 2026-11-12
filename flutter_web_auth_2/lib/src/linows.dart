@@ -23,15 +23,14 @@ class FlutterWebAuth2LinowsPlugin extends FlutterWebAuth2Platform {
   }) async {
     final parsedOptions = FlutterWebAuth2Options.fromJson(options);
     if (parsedOptions.useWebview) {
-      final webview = _webviewImpl;
-      if (webview == null) {
+      if (_webviewImpl == null) {
         throw StateError(
           'useWebview: true needs a webview, but '
           'flutter_web_auth_2_desktop_webview is overridden with its stub. '
           'Remove the override, or pass useWebview: false.',
         );
       }
-      return webview.authenticate(
+      return _webviewImpl.authenticate(
         url: url,
         callbackUrlScheme: callbackUrlScheme,
         options: options,

@@ -270,7 +270,7 @@ dependency_overrides:
       path: flutter_web_auth_2_desktop_webview_stub
 ```
 
-With the stub, `useWebview: true` throws a `StateError` on Windows and Linux.
+Explicitly using the stub together with `useWebview: true` throws a `StateError` on Windows and Linux. You cannot use the webview approach without the required dependencies.
 
 ## Troubleshooting
 
