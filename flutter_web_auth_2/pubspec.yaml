@@ -27,6 +27,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_auth_2_desktop_webview: ^6.0.0-alpha.8
   flutter_web_auth_2_platform_interface: ^6.0.0-alpha.9
   flutter_web_plugins:
     sdk: flutter
