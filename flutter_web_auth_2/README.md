@@ -25,12 +25,6 @@ Add the following snippet to your `pubspec.yaml` and follow the [Setup guide](#s
 ```yaml
 dependencies:
   flutter_web_auth_2: ^6.0.0-alpha.0
-  # Only for `useWebview: true`, which Linux and Windows honour; macOS, iOS,
-  # Android and web authenticate natively and ignore it. This package is what
-  # links WebKitGTK and WebView2, so leaving it out keeps them, and a macOS
-  # webview plugin that is never called, out of the build. Authentication then
-  # runs in the browser on Linux and Windows.
-  flutter_web_auth_2_desktop_webview: ^6.0.0-alpha.8
 ```
 
 To authenticate against your own custom site:
@@ -259,12 +253,24 @@ Additional parameters for the URL open call can be passed in the `authenticate` 
 
 When using `useWebview: false`, there is a limitation that the callback URL scheme must start with `http://localhost:{port}`.
 
-When specifying `useWebview: true` (which is the default behaviour), add the
-[`flutter_web_auth_2_desktop_webview`](https://pub.dev/packages/flutter_web_auth_2_desktop_webview)
-package — without it the call throws, because this package alone links no
-webview — and follow [desktop_webview_window's guide](https://pub.dev/packages/desktop_webview_window).
+When specifying `useWebview: true` (which is the default behaviour), you need to make sure to follow [desktop_webview_window's guide](https://pub.dev/packages/desktop_webview_window).
 Also be aware that your users might need to install a Webview API (which is preinstalled on Windows 11 and some Windows 10 and Linux installations).
 For details, see also desktop_webview_window's guide above.
+
+#### Without the webview
+
+If you only use `useWebview: false`, you can avoid linking WebKitGTK on Linux and WebView2 on Windows by replacing the webview package with a stub:
+
+```yaml
+dependency_overrides:
+  flutter_web_auth_2_desktop_webview:
+    git:
+      url: https://github.com/ThexXTURBOXx/flutter_web_auth_2
+      ref: <flutter_web_auth_2 version>
+      path: flutter_web_auth_2_desktop_webview_stub
+```
+
+With the stub, `useWebview: true` throws a `StateError` on Windows and Linux.
 
 ## Troubleshooting
 
