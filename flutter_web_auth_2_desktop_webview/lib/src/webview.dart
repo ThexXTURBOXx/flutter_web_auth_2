@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:flutter_web_auth_2_platform_interface/flutter_web_auth_2_platform_interface.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -23,7 +22,8 @@ class FlutterWebAuth2WebViewPlugin extends FlutterWebAuth2Platform {
       throw StateError('Webview is not available');
     }
 
-    final parsedOptions = FlutterWebAuth2Options.fromJson(options);
+    final httpsHost = options['httpsHost'] as String?;
+    final httpsPath = options['httpsPath'] as String?;
 
     // Reset
     _authenticated = false;
@@ -43,10 +43,8 @@ class FlutterWebAuth2WebViewPlugin extends FlutterWebAuth2Platform {
     _webview!.setOnUrlRequestCallback((url) {
       final uri = Uri.parse(url);
       if (uri.scheme != callbackUrlScheme ||
-          (parsedOptions.httpsHost != null &&
-              uri.host != parsedOptions.httpsHost) ||
-          (parsedOptions.httpsPath != null &&
-              uri.path != parsedOptions.httpsPath)) {
+          (httpsHost != null && uri.host != httpsHost) ||
+          (httpsPath != null && uri.path != httpsPath)) {
         return true;
       }
       _authenticated = true;

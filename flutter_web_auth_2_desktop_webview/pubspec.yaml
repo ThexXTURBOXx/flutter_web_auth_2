@@ -21,7 +21,6 @@ dependencies:
   desktop_webview_window: ^0.4.0
   flutter:
     sdk: flutter
-  flutter_web_auth_2: ^6.0.0-alpha.8
   flutter_web_auth_2_platform_interface: ^6.0.0-alpha.0
   path_provider: ^2.1.2
 
@@ -30,12 +29,3 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-flutter:
-  plugin:
-    platforms:
-      linux:
-        dartPluginClass: FlutterWebAuth2DesktopWebview
-        fileName: flutter_web_auth_2_desktop_webview.dart
-      windows:
-        dartPluginClass: FlutterWebAuth2DesktopWebview
-        fileName: flutter_web_auth_2_desktop_webview.dart
