@@ -133,8 +133,8 @@ In order to do this, two additional options have been added (which are *required
 
 Version `3.0.0` featured a huge refactor which made it possible to maintain even more configuration
 possibilities. Even platform-specific ones! If you want to upgrade, you need to do the following:
-- Follow the [Setup] within this README again for your platform and do it from scratch (there might
-  be changes!)
+- Follow the [Setup guide](#setup) within this README again for your platform and do it from scratch
+  (there might be changes!)
 - Dart SDK constraints have been updated to `>=2.15.0`.
 - The configuration parameters have been removed from the `authenticate` function. Now, you have to
   pass a `FlutterWebAuth2Options` object with those options in it instead:

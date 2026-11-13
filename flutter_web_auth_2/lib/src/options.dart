@@ -1,10 +1,6 @@
 /// Default intent flags for opening the custom tabs intent on Android.
 const defaultIntentFlags = 0;
 
-/// "Ephemeral" intent flags for opening the custom tabs intent on Android.
-@Deprecated('Use [preferEphemeral]')
-const ephemeralIntentFlags = defaultIntentFlags | 1 << 30;
-
 /// Default HTML code that generates a nice callback page.
 const _defaultLandingPage = '''
 <!DOCTYPE html>
@@ -48,7 +44,10 @@ const _defaultLandingPage = '''
 
 /// Provides configuration options for calls to `authenticate`.
 class FlutterWebAuth2Options {
-  /// Construct an instance and specify the wanted options.
+  /// Construct an instance and specify the wanted options.\
+  /// For details about the options as well as their respective platform
+  /// compatibility, refer to the documentation of the corresponding members
+  /// within this file.
   const FlutterWebAuth2Options({
     bool? preferEphemeral,
     this.debugOrigin,
@@ -90,103 +89,122 @@ class FlutterWebAuth2Options {
         authTabsTimeout: json['authTabsTimeout'],
       );
 
-  /// **Only has an effect on iOS, Android and macOS!**
-  /// If this is `true`, an ephemeral web browser session
-  /// will be used where possible.
+  /// **Only has an effect on iOS, Android and macOS!**\
+  /// If this is `true`, an ephemeral web browser session will be used
+  /// where possible.\
+  /// *Default:* `false`
   final bool preferEphemeral;
 
-  /// **Only has an effect on Web!**
-  /// Can be used to override the origin of the redirect URL.
+  /// **Only has an effect on Web!**\
+  /// Can be used to override the origin of the redirect URL. This option is
+  /// simply ignored if it is `null`.\
   /// This is useful for cases where the redirect URL is not on the same
-  /// domain (e.g. local testing).
+  /// domain (e.g. local testing).\
+  /// *Default:* `null`
   final String? debugOrigin;
 
-  /// **Only has an effect on Android!**
-  /// Can be used to configure the intent flags for the custom tabs intent.
+  /// **Only has an effect on Android!**\
+  /// Can be used to configure the intent flags for the custom tabs intent.\
   /// Possible values can be found
   /// [here](https://developer.android.com/reference/android/content/Intent#setFlags(int))
   /// or by using the flags from the `Flag` class from
-  /// [android_intent_plus](https://pub.dev/packages/android_intent_plus).
+  /// [android_intent_plus](https://pub.dev/packages/android_intent_plus).\
+  /// *Default:* [defaultIntentFlags]
   final int intentFlags;
 
-  /// **Only has an effect on Web!**
-  /// Can be used to pass a window name for the URL open call.
+  /// **Only has an effect on Web!**\
+  /// Can be used to pass a window name for the URL open call. Can also be
+  /// `null` to use the default window name.\
   /// See [here](https://www.w3schools.com/jsref/met_win_open.asp) for
-  /// possible parameter values.
+  /// possible parameter values.\
+  /// *Default:* `null`
   final String? windowName;
 
-  /// **Only has an effect on Linux, Web, and Windows!**
+  /// **Only has an effect on Linux, Web, and Windows!**\
   /// Can be used to specify a timeout in seconds when the authentication shall
   /// be deemed unsuccessful. An error will be thrown in order to abort the
-  /// authentication process.
+  /// authentication process.\
+  /// *Default:* `300`
   final int timeout;
 
-  /// **Only has an effect on Linux and Windows with [useWebview] = `false`!**
+  /// **Only has an effect on Linux and Windows with [useWebview] = `false`!**\
   /// Can be used to customise the landing page which tells the user that the
   /// authentication was successful. It is the literal HTML source code which
-  /// will be displayed using a `HttpServer`.
+  /// will be displayed using a `HttpServer`.\
+  /// *Default:* [_defaultLandingPage]
   final String landingPageHtml;
 
-  /// **Only has an effect on Web!**
+  /// **Only has an effect on Web!**\
   /// When set to `true`, the authentication URL will be loaded in a hidden
   /// `iframe` instead of opening a new window or tab. This is primarily used
   /// for silent authentication processes where a full-page redirect is not
   /// desirable. It allows for a seamless user experience by performing the
   /// authentication in the background. This approach is useful for token
   /// refreshes or for maintaining user sessions without explicit user
-  /// interaction. IT IS YOUR RESPONSIBILITY TO MAKE SURE THAT THE URL IS SANE
-  /// AND DOES NOT CAUSE ANY HARM. IFRAMES CAN BE EXPLOITED IN MANY WAYS BY
-  /// MALICIOUS ATTACKERS!
+  /// interaction.\
+  /// IT IS YOUR RESPONSIBILITY TO MAKE SURE THAT THE URL IS SANE AND DOES NOT
+  /// CAUSE ANY HARM. IFRAMES CAN BE EXPLOITED IN MANY WAYS BY MALICIOUS
+  /// ATTACKERS!\
+  /// *Default:* `false`
   final bool silentAuth;
 
-  /// **Only has an effect on Linux and Windows!**
-  /// When set to `true`, use the new Webview implementation.
+  /// **Only has an effect on Linux and Windows!**\
+  /// When set to `true`, use the new Webview implementation.\
   /// When set to `false`, the old approach using an internal server is being
   /// used in order to fetch the HTTP result. When using the internal server,
   /// please keep in mind that you cannot choose any callback URL scheme, as
-  /// described in https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/25
+  /// described in
+  /// https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/25 \
+  /// *Default:* `true`
   final bool useWebview;
 
-  /// **Only has an effect on Android, iOS, Linux, macOS, and Windows!**
+  /// **Only has an effect on Android, iOS, Linux, macOS, and Windows!**\
   /// String specifying the **host** of the URL that the page will redirect to
-  /// upon successful authentication (callback URL).
+  /// upon successful authentication (callback URL).\
   /// When `callbackUrlScheme` is `https`, this **must** be specified on
-  /// Android and Apple devices running iOS >= 17.4 or macOS >= 14.4.
+  /// Android and Apple devices running iOS >= 17.4 or macOS >= 14.4.\
   /// On Linux and Windows, this is used when `useWebview == true` in order to
-  /// compare with the host of the callback URL (no matter which scheme!).
+  /// compare with the host of the callback URL (no matter which scheme!).\
+  /// In all other cases, this option is not used at all.\
+  /// *Default:* `null`
   final String? httpsHost;
 
-  /// **Only has an effect on Android, iOS, Linux, macOS, and Windows!**
+  /// **Only has an effect on Android, iOS, Linux, macOS, and Windows!**\
   /// String specifying the **path** of the URL that the page will redirect to
-  /// upon successful authentication (callback URL).
+  /// upon successful authentication (callback URL).\
   /// When `callbackUrlScheme` is `https`, this **must** be specified on
-  /// Android and Apple devices running iOS >= 17.4 or macOS >= 14.4.
+  /// Android and Apple devices running iOS >= 17.4 or macOS >= 14.4.\
   /// On Linux and Windows, this is used when `useWebview == true` in order to
-  /// compare with the path of the callback URL (no matter which scheme!).
+  /// compare with the path of the callback URL (no matter which scheme!).\
+  /// In all other cases, this option is not used at all.\
+  /// *Default:* `null`
   final String? httpsPath;
 
-  /// **Only has an effect on Android!**
-  /// Sets the Android browser priority for opening custom tabs.
-  /// Needs to be a list of packages providing a custom tabs
-  /// service. If a browser is not installed, the next on the list
-  /// is tested etc.
+  /// **Only has an effect on Android!**\
+  /// Sets the Android browser priority for opening custom tabs. Can also be
+  /// `null` to use the OS's preferred option\
+  /// Needs to be a list of packages providing a custom tabs service. If a
+  /// browser is not installed, the next on the list is tested etc.\
+  /// *Default:* `null`
   final List<String>? customTabsPackageOrder;
 
-  /// **Only has an effect on Android!**
+  /// **Only has an effect on Android!**\
   /// If this is `true`, an Auth Tab is used when the selected browser supports
   /// it. If the Auth Tab refuses the flow, authentication is retried once with
   /// a regular Custom Tab. When set to `false`, a regular Custom Tab is always
-  /// used.
+  /// used.\
+  /// *Default:* `true`
   final bool preferAuthTabs;
 
-  /// **Only has an effect on Android!**
+  /// **Only has an effect on Android!**\
   /// Some browser implementations advertise auth tabs support, even though it
   /// is inherently non-functional for various reasons. This can be detected
   /// within flutter_web_auth_2 through a timeout mechanism. This config option
   /// specifies how many milliseconds to wait until the implementation should
-  /// fall back to a custom tab instead of an auth tab.
+  /// fall back to a custom tab instead of an auth tab.\
   /// You can turn the timeout-based fallback mechanism off by setting this
-  /// value to `0`.
+  /// value to `0`.\
+  /// *Default:* `1000`
   final int authTabsTimeout;
 
   /// Convert this instance to JSON format.
