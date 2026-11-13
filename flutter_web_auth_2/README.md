@@ -88,6 +88,18 @@ final accessToken = jsonDecode(response.body)['access_token'] as String;
 
 ## Migration
 
+### Upgrading to `6.x`
+
+The following constraints have been added in `6.0.0`:
+- Dart SDK `>=3.13.0` and Flutter `>=3.47.0` is now required
+- Migrated to `material_ui` package
+- Built-in Kotlin is fully supported (and AGP `9.x` as well as Gradle `9.x`)
+- If you do not need the web view approach on Linux or Windows at all, you can follow the [unlink instructions](#without-the-webview), which could make your build faster and lighter
+- Upgraded `web` dependency fully to `1.x` (that is, `0.x` is no longer supported)
+- Upgraded `window_to_front` dependency fully to `1.x` (that is, `0.x` is no longer supported)
+- Upgraded `desktop_webview_window` dependency fully to `0.4.x` (that is, `0.3.x` and below is no longer supported)
+- Renamed: `cleanUpDanglingCalls` -> `clearAllDanglingCalls`
+
 ### Upgrading to `5.x`
 
 The following constraints have been added in `5.0.0`:
@@ -97,6 +109,7 @@ The following constraints have been added in `5.0.0`:
 - Dart SDK `>=3.5.0` is now required (due to migration to melos `7.x`)
 - If you want ephemeral authentication on Android, use `preferEphemeral` instead of `ephemeralIntentFlags` as `intentFlags` have other influences now
 
+<!---
 ### Upgrading to `4.x`
 
 Generally, the following constraints have been added in version `4.0.0`:
@@ -128,7 +141,9 @@ In order to do this, two additional options have been added (which are *required
 `callbackUrlScheme` is `https`!):
 - `httpsHost` is the host of the callback URL
 - `httpsPath` is the path of the callback URL
+-->
 
+<!---
 ### Upgrading to `3.x`
 
 Version `3.0.0` featured a huge refactor which made it possible to maintain even more configuration
@@ -144,7 +159,9 @@ possibilities. Even platform-specific ones! If you want to upgrade, you need to 
     iOS and MacOS) and `intentFlags` (for Android) within `FlutterWebAuth2Options`. The former works
     exactly the same. However, if you want the old behaviour using `preferEphemeral` on Android, use
     the `ephemeralIntentFlags` constant as value for `intentFlags`. **(THIS WAS REVERTED IN 5.x)**
+-->
 
+<!---
 ### Upgrading from `flutter_web_auth`
 
 If you used `flutter_web_auth` correctly (and without extra hackage) before, it should be sufficient to replace the following strings *everywhere* (yes, also in `AndroidManifest.xml` for example):
@@ -154,6 +171,7 @@ If you used `flutter_web_auth` correctly (and without extra hackage) before, it 
 If you are using versions `>= 3.0.0`, you also need to follow the migration guide(s) above!
 
 If you are still unsure or something is not working as well as before, please [open a new issue](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/new/choose).
+-->
 
 ## Setup
 
