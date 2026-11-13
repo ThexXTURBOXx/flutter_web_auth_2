@@ -1,6 +1,6 @@
 name: flutter_web_auth_2_desktop_webview
 description: Authenticates in an in-app webview on Linux and Windows, for flutter_web_auth_2.
-version: 6.0.0-alpha.10
+version: 6.0.0-alpha.11
 resolution: workspace
 homepage: https://github.com/ThexXTURBOXx/flutter_web_auth_2
 repository: https://github.com/ThexXTURBOXx/flutter_web_auth_2

@@ -1,7 +1,14 @@
-## Unreleased
+## 6.0.0-alpha.11
 
-- 🐛 Android: Use Auth Tabs only when the selected browser reports support, retry refused Auth Tab flows once with a regular Custom Tab, and add `preferAuthTabs` to `FlutterWebAuth2Options` to always use a regular Custom Tab
-- 🐛 Android: Close the Custom Tab after the redirect when `CallbackActivity` is started in a separate task (e.g. with `android:taskAffinity=""`)
+If everything runs well, this will be the last alpha release for `6.0.0`.
+- 💥 Drop support for `window_to_front` versions `0.x`
+- 💥 Drop support for Android Gradle Plugin (AGP) versions `8.x`
+- 🌹 Update AndroidX browser
+- 🌹 Improve documentation
+- 🌹 Add `6.x` migration guide
+- 🌹 Cleanup
+- 🐛 Use Auth Tabs only when the selected browser reports support, retry refused Auth Tab flows once with a regular Custom Tab
+- 🐛 Close the Custom Tab after the redirect when `CallbackActivity` is started in a separate task (e.g. with `android:taskAffinity=""`)
 
 ## 6.0.0-alpha.10
 
