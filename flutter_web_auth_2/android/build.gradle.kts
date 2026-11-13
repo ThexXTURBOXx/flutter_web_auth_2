@@ -53,5 +53,5 @@ android {
 }
 
 dependencies {
-    implementation("androidx.browser:browser:1.9.0")
+    implementation("androidx.browser:browser:1.10.0")
 }
