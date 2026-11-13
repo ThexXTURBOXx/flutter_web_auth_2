@@ -56,6 +56,7 @@ class FlutterWebAuth2Plugin(
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_CALLBACK_PATH, options["httpsPath"] as String?)
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_OPTION_PREFER_EPHEMERAL, options["preferEphemeral"] as Boolean? ?: false)
                     putExtra(AuthenticationManagementActivity.KEY_AUTH_OPTION_PREFER_AUTH_TABS, options["preferAuthTabs"] as Boolean? ?: true)
+                    putExtra(AuthenticationManagementActivity.KEY_AUTH_OPTION_AUTH_TABS_TIMEOUT, options["authTabsTimeout"] as Int)
                 })
             }
 

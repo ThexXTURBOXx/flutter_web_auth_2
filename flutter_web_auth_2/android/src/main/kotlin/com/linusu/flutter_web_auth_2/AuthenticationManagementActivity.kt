@@ -24,13 +24,12 @@ class AuthenticationManagementActivity : ComponentActivity() {
         const val KEY_AUTH_OPTION_TARGET_PACKAGE: String = "authOptionsTargetPackage"
         const val KEY_AUTH_OPTION_PREFER_EPHEMERAL: String = "authOptionsPreferEphemeral"
         const val KEY_AUTH_OPTION_PREFER_AUTH_TABS: String = "authOptionsPreferAuthTabs"
+        const val KEY_AUTH_OPTION_AUTH_TABS_TIMEOUT: String = "authOptionsAuthTabsTimeout"
         const val KEY_AUTH_CALLBACK_SCHEME: String = "authCallbackScheme"
         const val KEY_AUTH_CALLBACK_HOST: String = "authCallbackHost"
         const val KEY_AUTH_CALLBACK_PATH: String = "authCallbackPath"
         const val KEY_AUTH_FALLBACK_STARTED: String = "authFallbackStarted"
         const val KEY_AUTH_LAUNCHED_AT: String = "authLaunchedAt"
-
-        private const val AUTH_TAB_FAST_CANCEL_MS: Long = 1000
 
         @Volatile
         var authTaskId: Int = -1
@@ -54,6 +53,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
     private var callbackPath: String? = null
     private var fallbackStarted: Boolean = false
     private var launchedAt: Long = 0
+    private var authTabsTimeout: Int = 1000
 
     private lateinit var authLauncher: ActivityResultLauncher<Intent>
 
@@ -85,7 +85,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
 
             // Some Auth Tab implementations report verification failures as
             // an immediate cancellation instead of a dedicated result code.
-            AuthTabIntent.RESULT_CANCELED -> elapsedSinceLaunch < AUTH_TAB_FAST_CANCEL_MS
+            AuthTabIntent.RESULT_CANCELED -> elapsedSinceLaunch < authTabsTimeout
 
             else -> false
         }
@@ -257,6 +257,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         outState.putString(KEY_AUTH_OPTION_TARGET_PACKAGE, targetPackage)
         outState.putBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, preferEphemeral)
         outState.putBoolean(KEY_AUTH_OPTION_PREFER_AUTH_TABS, preferAuthTabs)
+        outState.putInt(KEY_AUTH_OPTION_AUTH_TABS_TIMEOUT, authTabsTimeout)
         outState.putString(KEY_AUTH_CALLBACK_SCHEME, callbackScheme)
         outState.putString(KEY_AUTH_CALLBACK_HOST, callbackHost)
         outState.putString(KEY_AUTH_CALLBACK_PATH, callbackPath)
@@ -307,6 +308,7 @@ class AuthenticationManagementActivity : ComponentActivity() {
         targetPackage = state.getString(KEY_AUTH_OPTION_TARGET_PACKAGE)
         preferEphemeral = state.getBoolean(KEY_AUTH_OPTION_PREFER_EPHEMERAL, false)
         preferAuthTabs = state.getBoolean(KEY_AUTH_OPTION_PREFER_AUTH_TABS, true)
+        authTabsTimeout = state.getInt(KEY_AUTH_OPTION_AUTH_TABS_TIMEOUT, 1000)
         callbackScheme = scheme
         callbackHost = state.getString(KEY_AUTH_CALLBACK_HOST)
         callbackPath = state.getString(KEY_AUTH_CALLBACK_PATH)
