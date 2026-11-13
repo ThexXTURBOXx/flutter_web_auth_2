@@ -61,12 +61,16 @@ class FlutterWebAuth2Options {
     this.httpsHost,
     this.httpsPath,
     this.customTabsPackageOrder,
+    bool? preferAuthTabs,
+    int? authTabsTimeout,
   }) : preferEphemeral = preferEphemeral ?? false,
+       preferAuthTabs = preferAuthTabs ?? true,
        intentFlags = intentFlags ?? defaultIntentFlags,
        timeout = timeout ?? 5 * 60,
        landingPageHtml = landingPageHtml ?? _defaultLandingPage,
        silentAuth = silentAuth ?? false,
-       useWebview = useWebview ?? true;
+       useWebview = useWebview ?? true,
+       authTabsTimeout = authTabsTimeout ?? 1000;
 
   /// Construct an instance from JSON format.
   FlutterWebAuth2Options.fromJson(Map<String, dynamic> json)
@@ -82,6 +86,8 @@ class FlutterWebAuth2Options {
         httpsHost: json['httpsHost'],
         httpsPath: json['httpsPath'],
         customTabsPackageOrder: json['customTabsPackageOrder'],
+        preferAuthTabs: json['preferAuthTabs'],
+        authTabsTimeout: json['authTabsTimeout'],
       );
 
   /// **Only has an effect on iOS, Android and macOS!**
@@ -166,6 +172,23 @@ class FlutterWebAuth2Options {
   /// is tested etc.
   final List<String>? customTabsPackageOrder;
 
+  /// **Only has an effect on Android!**
+  /// If this is `true`, an Auth Tab is used when the selected browser supports
+  /// it. If the Auth Tab refuses the flow, authentication is retried once with
+  /// a regular Custom Tab. When set to `false`, a regular Custom Tab is always
+  /// used.
+  final bool preferAuthTabs;
+
+  /// **Only has an effect on Android!**
+  /// Some browser implementations advertise auth tabs support, even though it
+  /// is inherently non-functional for various reasons. This can be detected
+  /// within flutter_web_auth_2 through a timeout mechanism. This config option
+  /// specifies how many milliseconds to wait until the implementation should
+  /// fall back to a custom tab instead of an auth tab.
+  /// You can turn the timeout-based fallback mechanism off by setting this
+  /// value to `0`.
+  final int authTabsTimeout;
+
   /// Convert this instance to JSON format.
   Map<String, dynamic> toJson() => {
     'preferEphemeral': preferEphemeral,
@@ -176,8 +199,10 @@ class FlutterWebAuth2Options {
     'landingPageHtml': landingPageHtml,
     'silentAuth': silentAuth,
     'useWebview': useWebview,
-    'customTabsPackageOrder': customTabsPackageOrder,
     'httpsHost': httpsHost,
     'httpsPath': httpsPath,
+    'customTabsPackageOrder': customTabsPackageOrder,
+    'preferAuthTabs': preferAuthTabs,
+    'authTabsTimeout': authTabsTimeout,
   };
 }
