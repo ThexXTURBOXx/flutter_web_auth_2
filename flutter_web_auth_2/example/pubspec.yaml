@@ -17,7 +17,7 @@ dependencies:
   cupertino_icons: ^2.0.0
   flutter:
     sdk: flutter
-  flutter_web_auth_2: ^6.0.0-alpha.0
+  flutter_web_auth_2: ^6.0.0
   material_ui: ^1.1.1
 
 dev_dependencies:

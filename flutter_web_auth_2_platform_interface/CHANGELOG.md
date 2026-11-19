@@ -1,3 +1,7 @@
+## 6.0.0
+
+*No changes - just the official version release!*
+
 ## 6.0.0-alpha.11
 
 - 🌹 Cleanup

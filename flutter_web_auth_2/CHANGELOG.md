@@ -1,3 +1,7 @@
+## 6.0.0
+
+*No changes - just the official version release!*
+
 ## 6.0.0-alpha.11
 
 If everything runs well, this will be the last alpha release for `6.0.0`.
