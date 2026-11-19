@@ -36,13 +36,18 @@ class CallbackActivity : Activity() {
         startActivity(intent)
     }
 
-    private fun ActivityManager.AppTask.taskId(): Int =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            taskInfo.taskId
+    private fun ActivityManager.AppTask.taskId(): Int? {
+        // `getTaskInfo()` is annotated `@Nullable` from the Android 17 (API 37)
+        // SDK on, so an app compiling against it cannot read it unchecked. A
+        // task without info is never the auth task.
+        val info: ActivityManager.RecentTaskInfo? = taskInfo
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            info?.taskId
         } else {
             @Suppress("deprecation")
-            taskInfo.persistentId
+            info?.persistentId
         }
+    }
 
 
     /** Fix sometimes android:autoVerify="true" cannot works when it can't access Google after installation.
