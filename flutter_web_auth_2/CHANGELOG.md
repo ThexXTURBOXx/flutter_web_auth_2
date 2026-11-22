@@ -1,3 +1,7 @@
+## 6.0.1
+
+- 🌹 Allow "enforced" compileSdk `37` (Thanks to [@mtallenca](https://github.com/mtallenca) in [#225](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/225))
+
 ## 6.0.0
 
 *No changes - just the official version release!*

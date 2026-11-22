@@ -1,3 +1,7 @@
+## 6.0.1
+
+- 🌹 Updated old changelog (no changes that affect users, really)
+
 ## 6.0.0
 
 *No changes - just the official version release!*
