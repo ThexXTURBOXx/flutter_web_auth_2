@@ -54,6 +54,7 @@ class FlutterWebAuth2Options {
     int? intentFlags,
     this.windowName,
     int? timeout,
+    bool? cancelOnResume,
     String? landingPageHtml,
     bool? silentAuth,
     bool? useWebview,
@@ -66,6 +67,7 @@ class FlutterWebAuth2Options {
        preferAuthTabs = preferAuthTabs ?? true,
        intentFlags = intentFlags ?? defaultIntentFlags,
        timeout = timeout ?? 5 * 60,
+       cancelOnResume = cancelOnResume ?? true,
        landingPageHtml = landingPageHtml ?? _defaultLandingPage,
        silentAuth = silentAuth ?? false,
        useWebview = useWebview ?? true,
@@ -79,6 +81,7 @@ class FlutterWebAuth2Options {
         intentFlags: json['intentFlags'],
         windowName: json['windowName'],
         timeout: json['timeout'],
+        cancelOnResume: json['cancelOnResume'],
         landingPageHtml: json['landingPageHtml'],
         silentAuth: json['silentAuth'],
         useWebview: json['useWebview'],
@@ -126,6 +129,15 @@ class FlutterWebAuth2Options {
   /// authentication process.\
   /// *Default:* `300`
   final int timeout;
+
+  /// **Only has an effect on Android as well as Linux and Windows with
+  /// [useWebview] = `false`**!\
+  /// Immediately cancels the authentication process and cleans up dangling
+  /// calls when the user returns to the app. This is very recommended on
+  /// Android and may also make sense on Linux and Windows for more reliable
+  /// cancel mechanisms other than [timeout]s.\
+  /// *Default:* `true`
+  final bool cancelOnResume;
 
   /// **Only has an effect on Linux and Windows with [useWebview] = `false`!**\
   /// Can be used to customise the landing page which tells the user that the
@@ -214,6 +226,7 @@ class FlutterWebAuth2Options {
     'intentFlags': intentFlags,
     'windowName': windowName,
     'timeout': timeout,
+    'cancelOnResume': cancelOnResume,
     'landingPageHtml': landingPageHtml,
     'silentAuth': silentAuth,
     'useWebview': useWebview,
