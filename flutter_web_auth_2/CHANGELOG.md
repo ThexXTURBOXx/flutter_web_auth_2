@@ -11,8 +11,8 @@ If everything runs well, this will be the last alpha release for `6.0.0`.
 - 🌹 Improve documentation
 - 🌹 Add `6.x` migration guide
 - 🌹 Cleanup
-- 🐛 Use Auth Tabs only when the selected browser reports support, retry refused Auth Tab flows once with a regular Custom Tab
-- 🐛 Close the Custom Tab after the redirect when `CallbackActivity` is started in a separate task (e.g. with `android:taskAffinity=""`)
+- 🐛 Use Auth Tabs only when the selected browser reports support, retry refused Auth Tab flows once with a regular Custom Tab (Thanks to [@hokeroid](https://github.com/hokeroid), [@0phelia](https://github.com/0phelia), and [@0phelia](https://github.com/fryette) in [#216](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/216), [#218](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/218), and [#220](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/220), related to [#215](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/215) and [#219](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/219))
+- 🐛 Close the Custom Tab after the redirect when `CallbackActivity` is started in a separate task (e.g. with `android:taskAffinity=""`) (Thanks to [@hokeroid](https://github.com/hokeroid), [@0phelia](https://github.com/0phelia), and [@0phelia](https://github.com/fryette) in [#216](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/216), [#218](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/218), and [#220](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/220), related to [#215](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/215) and [#219](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/219))
 
 ## 6.0.0-alpha.10
 
