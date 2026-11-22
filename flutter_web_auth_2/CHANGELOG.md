@@ -1,3 +1,7 @@
+## 6.1.0
+
+- 🌹 Allow disabling immediate termination of authentication attempts when resuming app (related to [#226](https://github.com/ThexXTURBOXx/flutter_web_auth_2/issues/226))
+
 ## 6.0.1
 
 - 🌹 Allow "enforced" compileSdk `37` (Thanks to [@mtallenca](https://github.com/mtallenca) in [#225](https://github.com/ThexXTURBOXx/flutter_web_auth_2/pull/225))
